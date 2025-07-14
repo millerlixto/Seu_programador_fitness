@@ -1,0 +1,236 @@
+#define TAM_LINHA 256
+#define NIVEIS_ATIVIDADE 5
+
+typedef struct {
+    int proteina;
+    int carboidrato;
+    int gordura;
+} Macronutrientes;
+
+typedef struct {
+    int peso;
+    Macronutrientes macros[NIVEIS_ATIVIDADE]; // níveis 1 a 5
+} LinhaTabela;
+
+int parse_macros(const char *str, Macronutrientes *m) {
+    // Exemplo de entrada: "54/100/36"
+    return sscanf(str, "%d/%d/%d", &m->proteina, &m->carboidrato, &m->gordura);
+}
+
+int buscar_macros_por_peso(const char *arquivo, int peso_desejado, LinhaTabela *resultado) {
+    FILE *f = fopen(arquivo, "r");
+    if (!f) {
+        perror("Erro ao abrir arquivo");
+        return 0;
+    }
+
+    char linha[TAM_LINHA];
+    // Lê e ignora cabeçalho
+    if (!fgets(linha, TAM_LINHA, f)) {
+        fclose(f);
+        return 0;
+    }
+
+    while (fgets(linha, TAM_LINHA, f)) {
+        linha[strcspn(linha, "\r\n")] = 0;
+
+        char macros_str[NIVEIS_ATIVIDADE][20];
+        int peso_lido;
+
+        int campos_lidos = sscanf(linha, "%d %19s %19s %19s %19s %19s",
+                                 &peso_lido,
+                                 macros_str[0], macros_str[1], macros_str[2], macros_str[3], macros_str[4]);
+
+        if (campos_lidos != 6) continue;
+
+        if (peso_lido == peso_desejado) {
+            resultado->peso = peso_lido;
+            for (int i = 0; i < NIVEIS_ATIVIDADE; i++) {
+                if (parse_macros(macros_str[i], &resultado->macros[i]) != 3) {
+                    printf("Erro ao interpretar macros para peso %d\n", peso_lido);
+                    fclose(f);
+                    return 0;
+                }
+            }
+            fclose(f);
+            return 1;
+        }
+    }
+
+    fclose(f);
+    return 0;
+}
+
+/*void ler_alimentos(alimento a[]){
+
+// ler a entrada de 6 alimentos
+for (int i = 0; i <QUANT_ALIMENT0; i++){
+
+    int limp;
+    // Alocar memória para o nome do alimento
+    a[i].nome_alimento = (char *)malloc(TAM_NOME * sizeof(char));
+        if (a[i].nome_alimento == NULL) {
+            //Tratar erro de alocação
+            free(a); //Libera a memória de antes de sair
+            return;
+        }
+printf("\n******************************Inicia processo de alimentacao da tabela*********************************\n");
+
+         ler_string(a[i].nome_alimento, TAM_NOME, "\nAlimento: ");//recebe a entrada do usuário
+
+        printf("calorias para cada 100g do alimento:  ");
+        scanf(" %f", &a[i].calorias);
+
+        // Limpa buffer 
+        while ((limp = getchar()) != '\n' && limp != EOF);
+
+         printf("proteina para cada 100g do alimento:  ");
+        scanf(" %f", &a[i].proteina);
+
+          // Limpa buffer 
+            while ((limp = getchar()) != '\n' && limp != EOF);
+
+         printf("carboidrato para cada 100g do alimento:  ");
+        scanf(" %f", &a[i].carboidrato);
+
+          // Limpa buffer 
+            while ((limp = getchar()) != '\n' && limp != EOF);
+
+         printf("gordura para cada 100g do alimento:  ");
+        scanf(" %f", &a[i].gordura);
+
+          // Limpa buffer 
+            while ((limp = getchar()) != '\n' && limp != EOF);
+
+         }
+     }
+
+
+void carrega_alimentos(alimento a[]){
+FILE *f = fopen("Tabela_Nutricional.txt", "w");
+
+fprintf(f, "\n****************************Tabela Nutricional*********************************\n");
+    fprintf(f, "\nAlimento   Kcal-----Prot----Carb----Gord\n");
+    if(f == NULL){
+        printf("Erro ao abrir arquivo!");
+        return;
+    }
+
+// carregar 6 alimentos no arquivo
+    for(int i=0; i<QUANT_ALIMENT0; i++){
+    fprintf(f, "%s\t", a[i].nome_alimento);
+        fprintf(f, "  %.2f   %.2f   %.2f   %.2f\n", a[i].calorias, a[i].proteina, a[i].carboidrato, a[i].gordura);
+    }
+
+fprintf(f, "\nArquivo criado com sucesso!\n");
+
+    fclose(f);
+    
+/*printf("\nAlimento: %s\n", a->nome_alimento);
+printf("calorias: %2.f\n", a->calorias);
+printf("proteina: %2.f\n", a->proteina);
+printf("carboidrato: %2.f\n", a->carboidrato);
+printf("gordura: %2.f\n", a->gordura);
+
+}
+
+void monta_Plano_Alimentar(alimento a[]) {
+    FILE *f;
+    char linha[TAM_LINHA];
+    int quantidade = 0; //
+
+    f = fopen("Tabela_Nutricional.txt", "r");
+    if (f == NULL) {
+        perror("Erro ao abrir o arquivo");
+        return;
+    }
+
+    // Ignora cabeçalhos
+    fgets(linha, sizeof(linha), f); // linha com "********"
+    fgets(linha, sizeof(linha), f); // linha com colunas
+
+    while (fgets(linha, sizeof(linha), f) != NULL) {
+        // Aloca memória para o nome do alimento
+        a[quantidade].nome_alimento = (char *)malloc(TAM_NOME * sizeof(char));
+        if (a[quantidade].nome_alimento == NULL) {
+            printf("Erro de alocação!\n");
+            break;
+        }
+
+        // Tenta ler os dados da linha atual
+        if (sscanf(linha, "%s %f %f %f %f",
+                   a[quantidade].nome_alimento,
+                   &a[quantidade].calorias,
+                   &a[quantidade].proteina,
+                   &a[quantidade].carboidrato,
+                   &a[quantidade].gordura) == 5) {
+
+            printf("lidos: %s | Cal: %.2f | Prot: %.2f | Carb: %.2f | Gord: %.2f\n",
+                   a[quantidade].nome_alimento,
+                   a[quantidade].calorias,
+                   a[quantidade].proteina,
+                   a[quantidade].carboidrato,
+                   a[quantidade].gordura);
+
+            quantidade++;
+        }
+    }
+
+    fclose(f);
+}
+int calc_MacrosNutri(user *u) {
+    int peso = 40;
+    char *string_peso = malloc(10 * sizeof(char));
+    if (string_peso == NULL) {
+        printf("Erro ao alocar memória\n");
+        return 0;
+    }
+
+    sprintf(string_peso, "%d", peso);
+
+    FILE *f = fopen("Tabela_Nutricional.txt", "r");
+    if (f == NULL) {
+        perror("Erro ao abrir o arquivo");
+        free(string_peso);
+        return 0;
+    }
+
+    char linha[TAM_LINHA];
+    char nome_alimento[TAM_NOME];
+    float cal, prot, carb, gord;
+
+    int linha_atual = 0;
+    int linha_encontrada = -1;
+
+    while (fgets(linha, sizeof(linha), f) != NULL) {
+        linha_atual++;
+
+        // Ignora as duas primeiras linhas do arquivo (cabeçalho)
+        if (linha_atual <= 2) continue;
+
+        // Lê os campos da linha
+        if (sscanf(linha, "%s %f %f %f %f", nome_alimento, &cal, &prot, &carb, &gord) == 5) {
+            if (strcmp(nome_alimento, string_peso) == 0) {
+                printf("Linha %d encontrada:\n", linha_atual);
+                printf("Alimento: %s\n", nome_alimento);
+                printf("Calorias: %.2f\n", cal);
+                printf("Proteína: %.2f\n", prot);
+                printf("Carboidrato: %.2f\n", carb);
+                printf("Gordura: %.2f\n", gord);
+
+                linha_encontrada = linha_atual;
+                break;
+            }
+        }
+    }
+
+    fclose(f);
+    free(string_peso);
+
+    if (linha_encontrada != -1) {
+        return linha_encontrada;  // Retorna a linha onde o alimento foi encontrado
+    } else {
+        printf("Valor '%d' não encontrado no arquivo.\n", peso);
+        return -1;
+    }
+}/*
