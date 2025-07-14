@@ -1,7 +1,7 @@
 proteinas, file de peito de frango grelhado, ovo cozido, carne bovina magra cozida, atum em agua, salmao grelhado, tofu grelhado, peito de peru assado, iogurte grego natural, queijo cottage, lentilha cozida
 carboidratos, arroz integral cozido, batata doce assada, pao integral fatiado, quinoa cozida, macarrao integral cozido, aveia em flocos, milho cozido, mandioca cozida, centeio, feijao preto cozido
 legumes, brocolis cozido, cenoura cozida, couve-flor cozida, abobrinha refogada, berinjela assada, tomate cru, pepino cru, espinafre cozido, vagem cozida, cebola refogada
-vegetais, alface americana, rucula crua, agriao cru, couve crua, repolho cru, acelga crua, almeirao cru, chicoria crua, salsinha crua
+vegetais, alface americana, rucula crua, agriao cru, couve crua, repolho cru, acelga crua, almeirao cru, chicoria crua, salsinha crua, espinafre
 bebidas, agua, cha verde sem acucar, cafe preto sem acucar, suco natural de laranja, agua de coco, leite desnatado, agua com gas, suco de uva integral, cha de camomila, refrigerante zero
 
 

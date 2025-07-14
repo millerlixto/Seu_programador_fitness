@@ -9,8 +9,11 @@
 
 #define TAM_NOME 50
 #define TAM_LINHA 256
-#define QUANT_ALIMENTO 40
-#define QUANT_ALIMENT_pGRUPOS 11
+#define QUANT_ALIMENTO 55
+
+#define GRUPOS 5
+#define ALIMENTOS_POR_GRUPO 10
+#define TAM_NOME 50
 
 /**************funções genéricas****************/
 
@@ -218,20 +221,26 @@ int total =0;
       }
     }
     fclose(f);
-   /**************impressão e seleção (função com erro)****************/
-
+   /**************impressão e seleção (função com erro lógico, indice nao condiz com alimento para seleção)****************/
+int i = 0;
 
 int escolha = -1;
 int grupo = 0; 
-int inicio = grupo * 10;  
+int cont_nomeGrup_foraLista = 1;//para nome do gupo não aparecer na lista
 
 sa = malloc(sizeof(select_alimento));
 
-printf("Selecione um alimento do grupo %d:\n\n", grupo + 1);
+while (grupo < GRUPOS) {
+    int inicio = grupo * ALIMENTOS_POR_GRUPO;
+    int valida = 0;
+
+do{
+system("cls");
+printf("Selecione um alimento do grupo %d:\n\n", grupo + 1);//editado
 
 // Imprime os 10 alimentos com índice de 1 a 10
-for (int i = 0; i < 10; i++) {
-    printf("%d - %s\n", i + 1, alimentos[inicio + i]);
+for (int i = 0; i < ALIMENTOS_POR_GRUPO; i++) {
+    printf("%d - %s\n", i + 1, alimentos[inicio + i + cont_nomeGrup_foraLista]);
 }
 
 // Lê a escolha
@@ -239,19 +248,25 @@ printf("\nDigite o numero do alimento desejado: ");
 scanf("%d", &escolha);
 
 // Valida e salva
-if (escolha >= 1 && escolha <= 10) {
+if (escolha >= 1 && escolha <= ALIMENTOS_POR_GRUPO) {
     strcpy(sa->alimentos_escolhidos[grupo], alimentos[inicio + escolha - 1]);
     printf("Voce escolheu: %s\n", sa->alimentos_escolhidos[grupo]);
+    valida = 1;
+   
 } else {
-    printf("Escolha inválida.\n");
+    printf("Escolha inválida. Precione ENTER\n");
+    system("pause");
  }
 
- printf("alimento: %s\n",sa->alimentos_escolhidos[0]);
+ printf("alimento: %s\n",sa->alimentos_escolhidos[inicio]);
+ system("pause");
+}while(!valida);
+
+cont_nomeGrup_foraLista++;
+grupo ++;
+  }
+
 }
-
-    
-
-  
 
 
 /**************impressão****************/
