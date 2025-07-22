@@ -11,9 +11,9 @@
 #define TAM_LINHA 256
 #define QUANT_ALIMENTO 55
 
-#define GRUPOS 5
-#define ALIMENTOS_POR_GRUPO 10
-#define TAM_NOME 50
+#define GRUPO 5
+#define NOME 50
+#define QNT_ALIMENTO 10
 
 /**************funções genéricas****************/
 
@@ -25,7 +25,7 @@ int valida = 0;
 do{
 printf("\nDiga qual a intensidade de 0 a 4, sendo:\n\n");
 printf("- 0 para sedentario(trabalha de escritorio, passa maior parte do dia sentado.\n \n"); 
-printf("- 1para levemente ativo(Caminhadas curtas, tarefas domesticas leves, subir escadas ocasionalmente.)\n\n");
+printf("- 1 para levemente ativo(Caminhadas curtas, tarefas domesticas leves, subir escadas ocasionalmente.)\n\n");
 printf("- 2 para moderadamente ativo(Corrida leve, natacao, ciclismo, musculacao ou aulas de ginastica na academia.)\n\n");
 printf("- 3 para muito ativo(Maratonistas, atletas que treinam quase todos os dias, esportes coletivos de alta intensidade, musculacao pesada frequente.)\n\n");
 printf("- 4 para extremamente ativo(Atletas de alta performance, trabalhos com grande esforço físico contínuo (ex: construção civil).)");
@@ -191,81 +191,65 @@ return;
 
 /**************seleção de alimento no menu****************/
 
-void select_menu(select_alimento *sa){
-
-char linha[TAM_LINHA];
-char alimentos [QUANT_ALIMENTO][TAM_NOME];
-int total =0;
-
-
-    FILE *f = fopen ("Menu.txt" ,"r");
-
-    if(!f){
-    perror("erro ao abrir arquivo");
-     return;
-     }
-
-    char *token;
-    const char s[2] = ",";
-
-    while(fgets(linha, sizeof(linha), f)!=NULL){
-    linha[strcspn (linha, "\n")]='\0';
-
-    token = strtok(linha, s);
-
-   int i = 0;
-    while(token != NULL && total < QUANT_ALIMENTO){
-        strcpy(alimentos [total], token);
-        token = strtok(NULL, s);
-        total++;
-      }
+void select_menu(select_alimento* sa) {
+    FILE *f = fopen("Menu.txt", "r");
+    if (f == NULL) {
+        perror("Erro ao abrir arquivo");
+        return;
     }
+
+    char linha[TAM_LINHA];
+    char* token;
+    char alimentos[GRUPO][QNT_ALIMENTO][NOME];
+    int total_grupos = 0;
+
+    // Leitura e separação dos alimentos por grupo
+    while (fgets(linha, sizeof(linha), f) != NULL && total_grupos < GRUPO) {
+        
+        linha[strcspn(linha, "\n")] = '\0';
+        int alimento_idx = 0;
+
+        token = strtok(linha, ",");
+        while (token != NULL && alimento_idx < QNT_ALIMENTO) {
+            strncpy(alimentos[total_grupos][alimento_idx], token, NOME - 1);
+            alimentos[total_grupos][alimento_idx][NOME - 1] = '\0';
+            token = strtok(NULL, ",");
+            alimento_idx++;
+        }
+
+        total_grupos++;
+    }
+
     fclose(f);
-   /**************impressão e seleção (função com erro lógico, indice nao condiz com alimento para seleção)****************/
-int i = 0;
 
-int escolha = -1;
-int grupo = 0; 
-int cont_nomeGrup_foraLista = 1;//para nome do gupo não aparecer na lista
+    // Seleção do usuário
+    for (int grupo = 0; grupo < total_grupos; grupo++) {
+        printf("Escolha 1 alimento do grupo %s:\n", alimentos[grupo][0]);
+        for (int i = 0; i < QNT_ALIMENTO && alimentos[grupo][i][0] != '\0'; i++) {
+            printf("%d - %s\n", i + 1, alimentos[grupo][i+1]);
+            
+        }
 
-sa = malloc(sizeof(select_alimento));
+        int escolha;
+        do {
+            printf("Sua escolha: ");
+            scanf("%d", &escolha);
+            escolha +=1;
+            if (escolha < 1 || escolha > QNT_ALIMENTO || alimentos[grupo][escolha - 1][0] == '\0') {
+                printf("Opção inválida. Tente novamente.\n");
+            }
+        } while (escolha < 1 || escolha > QNT_ALIMENTO || alimentos[grupo][escolha - 1][0] == '\0');
 
-while (grupo < GRUPOS) {
-    int inicio = grupo * ALIMENTOS_POR_GRUPO;
-    int valida = 0;
+        strcpy(sa[grupo].alimentos_escolhidos, alimentos[grupo][escolha - 1]);
+         system ("pause");
+         system ("cls");
+    }
 
-do{
-system("cls");
-printf("Selecione um alimento do grupo %d:\n\n", grupo + 1);//editado
-
-// Imprime os 10 alimentos com índice de 1 a 10
-for (int i = 0; i < ALIMENTOS_POR_GRUPO; i++) {
-    printf("%d - %s\n", i + 1, alimentos[inicio + i + cont_nomeGrup_foraLista]);
-}
-
-// Lê a escolha
-printf("\nDigite o numero do alimento desejado: ");
-scanf("%d", &escolha);
-
-// Valida e salva
-if (escolha >= 1 && escolha <= ALIMENTOS_POR_GRUPO) {
-    strcpy(sa->alimentos_escolhidos[grupo], alimentos[inicio + escolha - 1]);
-    printf("Voce escolheu: %s\n", sa->alimentos_escolhidos[grupo]);
-    valida = 1;
-   
-} else {
-    printf("Escolha inválida. Precione ENTER\n");
-    system("pause");
- }
-
- printf("alimento: %s\n",sa->alimentos_escolhidos[inicio]);
- system("pause");
-}while(!valida);
-
-cont_nomeGrup_foraLista++;
-grupo ++;
-  }
-
+    // Mostra escolhas
+    printf("\nAlimentos escolhidos:\n");
+    for (int i = 0; i < total_grupos; i++) {
+        printf("Grupo %d: %s\n", i + 1, sa[i].alimentos_escolhidos);
+    }
 }
 
 

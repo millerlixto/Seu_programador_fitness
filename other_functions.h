@@ -1,6 +1,8 @@
 #ifndef OTHER_H
 #define OTHER_H
 
+#define NOME 50
+
 
 
 typedef struct{
@@ -9,9 +11,10 @@ typedef struct{
  int intensidade;//sedentário, levemente ativo, moderadamete ativo, muito ativo, extremamente ativo                 
 } ativ_fisica; 
 
-typedef struct{
-char alimentos_escolhidos[4][100];
-}select_alimento;
+typedef struct {
+    char alimentos_escolhidos[NOME];
+} select_alimento;
+
 /**************funções genéricas****************/
 
 //seleciona o fator de ativiadade

@@ -5,11 +5,14 @@
 #include "user.h"
 #include "other_functions.h"
 
+#define GRUPO 5
+
 /************** Inicia processo ****************/
 void iniciar_processo() {
     user u;
     ativ_fisica at;
     char resposta;
+    select_alimento sa[5];
 
     // Entrada de dados do usuário          
    
@@ -41,6 +44,7 @@ void iniciar_processo() {
             printf("Gasto Energetico Total: %.2f calorias (cal)\n", calc_GET(&at, &u));
             printf("\n************** Sugestao de Plano Alimentar ***************\n");
             // Gerar plano alimentar para ativos
+            select_menu(sa);
 
             
 
@@ -58,7 +62,7 @@ void iniciar_processo() {
             printf("Gasto Energetico Total: %.2f calorias (cal)\n", calc_GET(&at, &u));
             printf("\n************** Sugestao de Plano Alimentar ***************\n");
             // Gerar plano alimentar para sedentários
-
+            select_menu(sa);
         } else {
             printf("\nResposta invalida! Use 's' para sim ou 'n' para nao.\n");
         }
