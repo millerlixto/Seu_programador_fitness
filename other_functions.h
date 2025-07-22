@@ -6,8 +6,6 @@
 
 
 typedef struct{
- int frequencia;//quantidade de vezes na semana pratica ativiade fisica
- int duracao;//min
  int intensidade;//sedentário, levemente ativo, moderadamete ativo, muito ativo, extremamente ativo                 
 } ativ_fisica; 
 
@@ -42,6 +40,10 @@ double calc_TMB(user *u);
 double calc_GET(ativ_fisica *at, user *u);
 //calculo do IMC ínice de maça corporal
 void calc_IMC(user *u);
+//calculo dos macros
+void calc_Macros(user *u,ativ_fisica* at, select_alimento* sa);
+// calcula a idade mas próxima da tabela
+int buscar_idade_mais_proxima(user*u);
 
 /**************impressão****************/
 //função de impressão de dados das funções de da biblioteca other_functions

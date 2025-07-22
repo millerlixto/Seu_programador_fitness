@@ -21,8 +21,7 @@ void iniciar_processo() {
     perguntar_idade(&u);
     perguntar_altura(&u);
     perguntar_peso(&u);
-
-    // Pergunta se o usuário pratica atividade física
+    //Pergunta se o usuário pratica atividade física
     do {
         printf("Voce pratica alguma atividade fisica? (s/n): ");
         scanf(" %c", &resposta); // espaço ignora lixo no buffer

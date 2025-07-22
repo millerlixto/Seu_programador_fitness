@@ -15,6 +15,9 @@
 #define NOME 50
 #define QNT_ALIMENTO 10
 
+#define IDADES 26
+#define INTERVALO_IDADES 5
+
 /**************funções genéricas****************/
 
 //recede a intesidade da atividade física
@@ -252,6 +255,37 @@ void select_menu(select_alimento* sa) {
     }
 }
 
+void calc_Macros(user *u, ativ_fisica* at, select_alimento* sa){
+}
+
+
+/**************idade mais próxima****************/
+int buscar_idade_mais_proxima(user*u) {
+    //alocando memoria para vetor de idades
+    int* idade = (int*)malloc(IDADES*sizeof(int));
+    if(idade == NULL){
+        printf("Erro memória não alocada");
+        return 1;
+    }
+    //caregando vetor de idades
+    
+    for(int i = 1;i<IDADES;i++){
+    idade[i] = i*INTERVALO_IDADES;
+}
+    
+    int indice_mais_proximo = 0;
+    int menor_diferenca = abs(idade[0] - u->idade);
+
+    for (int i = 1; i < IDADES; i++) {
+        int diferenca = abs(idade[i] - u->idade);
+        if (diferenca < menor_diferenca) {
+            menor_diferenca = diferenca;
+            indice_mais_proximo = i;
+        }
+    }
+free(idade);
+    return idade[indice_mais_proximo];
+}
 
 /**************impressão****************/
 
