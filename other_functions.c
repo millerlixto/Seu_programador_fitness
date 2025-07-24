@@ -21,21 +21,29 @@
 /**************funções genéricas****************/
 
 //recede a intesidade da atividade física
-void definir_fator_atividade_ativo(ativ_fisica *at){
+
+void definir_fator_atividade_ativo(ativ_fisica  *at){
+
 // verificação,  1<= inteiro <=5
 int return_scanf;
 int valida = 0;
 do{
 printf("\nDiga qual a intensidade de 0 a 4, sendo:\n\n");
-printf("- 0 para sedentario(trabalha de escritorio, passa maior parte do dia sentado.\n \n"); 
-printf("- 1 para levemente ativo(Caminhadas curtas, tarefas domesticas leves, subir escadas ocasionalmente.)\n\n");
-printf("- 2 para moderadamente ativo(Corrida leve, natacao, ciclismo, musculacao ou aulas de ginastica na academia.)\n\n");
+printf("- 0 para sedentario(trabalha de escritorio, passa maior parte do dia sentado.: \n \n"); 
+printf("- 1 para levemente ativo(Caminhadas curtas, tarefas domesticas leves, subir escadas ocasionalmente.): \n\n");
+printf("- 2 para moderadamente ativo(Corrida leve, natacao, ciclismo, musculacao ou aulas de ginastica na academia.): \n\n");
 printf("- 3 para muito ativo(Maratonistas, atletas que treinam quase todos os dias, esportes coletivos de alta intensidade, musculacao pesada frequente.)\n\n");
-printf("- 4 para extremamente ativo(Atletas de alta performance, trabalhos com grande esforço físico contínuo (ex: construção civil).)");
+printf("- 4 para extremamente ativo(Atletas de alta performance, trabalhos com grande esforço físico contínuo (ex: construcao civil).): \n");
 
+//tratamento de entrada com scanf
+//O scanf retorna o numero de leituras com sucesso 
+//0 se a conversão falou e EOF(-1), se chegou ao fim do arquivo
+// ou houve erro de leitura
 return_scanf = scanf(" %d", &at->intensidade);
 
-if(return_scanf != 1){
+// se o scanf receber uma quantidade diferende de argumentos que o esperado 
+//pela entrado do usuários, as mensagens de erro são enviadas.
+if(return_scanf != 1){//um argumento esperado, retorno do scanf 1.
 
 printf("Erro: duracao invalida. Apenas numeros inteiros.\n");
 // Limpa buffer
@@ -53,21 +61,28 @@ valida = 1;
             while ((limp = getchar()) != '\n' && limp != EOF);
 }
 }while(!valida);
+
+ printf("Intensidade escolhida: %d\n", at->intensidade);
 }
 
 //recede a intesidade da atividade física de usuários menos ativo
 void definir_fator_atividade_MenosAtivo(ativ_fisica *at){
-// verificação,  1<= inteiro <=5
-int return_scanf;
+// verificação,  0 ou 1.
+int return_scanf;// tratamento de entrada
 int valida = 0;
 do{
 printf("\nSelecione a opcao que mais combina com seu estilo de vida: 0 ou 1, sendo:\n");
 printf("-0 para sedentario(trabalha de escritorio, passa maior parte do dia sentado. \n\n"); 
 printf("-1 para levemente ativo(Caminhadas curtas, tarefas domesticas leves, subir escadas ocasionalmente.)\n");
 
+//tratamento de entrada com scanf
+//O scanf retorna o numero de leituras com sucesso 
+//0 se a conversão falou e EOF(-1), se chegou ao fim do arquivo
+// ou houve erro de leitura
 return_scanf = scanf(" %d", &at->intensidade);
-
-if(return_scanf != 1){
+// se o scanf receber uma quantidade diferende de argumentos que o esperado 
+//pela entrado do usuários, as mensagens de erro são enviadas.
+if(return_scanf != 1){//um argumento esperado, retorno so scanf 1.
 
 printf("Erro: duracao invalida. Apenas numeros inteiros.\n");
 // Limpa buffer

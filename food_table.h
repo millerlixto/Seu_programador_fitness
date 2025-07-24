@@ -6,13 +6,15 @@
 
 #define TAM_ALIMENTO 50
 
+//recebe entrada do usuário para carregar
+//aquivo com as opçoes de alimentos, na tabela nutricional
 typedef struct{
 char nome_alimento[TAM_ALIMENTO];
 float calorias;
 float proteina;
 float carboidrato;
 float gordura;
-}alimento;
+}recebeAlimento;
 
 typedef struct {
     float Kcal;
@@ -21,10 +23,12 @@ typedef struct {
     float gord;
 } Atividade;
 
-
+// Quarda os macros nutrientes e calorias totais diárias
+// a ser consumida pelo usuário, 
+//baseado no peso e nivél de ativiade física do usuário
 typedef struct {
     int peso;
-    float grupo[4];    // macro nutrientes por peso e níveis de atividade
+    float grupo[4];    
 } MacrosNutr;
 
 typedef struct {
@@ -43,12 +47,13 @@ int macros_por_peso(user *u, ativ_fisica *at, MacrosNutr *saida);
 //função retorna os macros nutrientes por alimento
 int table_nutriction(infor_nutri_alimento *saida);
 
-/***********************************Gerar tabela nutricional******************************************/
+
+/***********************************Gerar alimentos na tabela nutricional******************************************/
 //função recebe uma lista de alimentos
-void recebe_alimentos(alimento a[]);
-//função que carrega os alimentos no arquivo
-void grava_alimentos(alimento *a);
-//visualiza o arquivo 
+void recebe_alimentos(recebeAlimento a[]);
+//função que carrega a lista de alimentos no arquivo
+void grava_alimentos(recebeAlimento *a);
+
 
 
 /***********************************Gerar Menu de alimentos******************************************/

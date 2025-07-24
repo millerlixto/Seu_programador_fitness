@@ -9,14 +9,13 @@
 void alimenta_tabela() {
 
 user u; 
-alimento a; 
+recebeAlimento a; 
 ativ_fisica at; 
-MacrosNutr saida;
 infor_nutri_alimento s;
 menu m;
 
-char nome_arquivo1 [TAM_NOME] = "Tabela_Nutricional.txt";
-char nome_arquivo2 [TAM_NOME] = "Menu.txt";
+//char nome_arquivo1 [TAM_NOME] = "Tabela_Nutricional.txt";
+//char nome_arquivo2 [TAM_NOME] = "Menu.txt";
 char nome_arquivo3 [TAM_NOME] = "macros_tabela.txt";
 
 //table_nutriction(&s);
@@ -38,8 +37,6 @@ char nome_arquivo3 [TAM_NOME] = "macros_tabela.txt";
 
 /***********************************Gera menu para seleção dos alimentos******************************************/
 
-
-
-    //if (!macros_por_peso(&u, &at, &saida))printf("Nao foi possivel carregar os dados.\n\n");
+   
     
 }

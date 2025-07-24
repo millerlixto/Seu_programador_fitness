@@ -14,7 +14,7 @@ int main() {
 iniciar_processo();
 
 //iniciar processo de alimentação de tabela
-// alimenta_tabela();
+ alimenta_tabela();
 
    system("pause");
   

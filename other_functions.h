@@ -4,11 +4,11 @@
 #define NOME 50
 
 
-
+//quarda o nível de atividade do usuário: sedentário, levemente ativo, moderadamete ativo, muito ativo, extremamente ativo 
 typedef struct{
- int intensidade;//sedentário, levemente ativo, moderadamete ativo, muito ativo, extremamente ativo                 
+ int intensidade;                
 } ativ_fisica; 
-
+//quarda o alimento escolhido pelo usuário para montar um plano alimentar
 typedef struct {
     char alimentos_escolhidos[NOME];
 } select_alimento;

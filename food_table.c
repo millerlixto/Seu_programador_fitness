@@ -110,7 +110,9 @@ char alimento[] = "frango";
     return 0;
 }
 /***********************************Gerar tabela nutricional******************************************/
-void recebe_alimentos(alimento a[]) {
+
+//passa  o alimentos e seus macronutrientes para a struct alimento
+void recebe_alimentos(recebeAlimento a[]) {
     int limp;
 
     for (int i = 0; i < QUANT_ALIMENT0; i++) {
@@ -136,7 +138,7 @@ void recebe_alimentos(alimento a[]) {
     }
 }
 
-void grava_alimentos(alimento a[]){
+void grava_alimentos(recebeAlimento a[]){
 FILE *f = fopen("Tabela_Nutricional.txt", "w");
     if(f == NULL){
         printf("Erro ao abrir arquivo!");
