@@ -17,7 +17,7 @@ void alimenta_tabela(void);
 
 int main() {
 //iniciar processo do programa
-//iniciar_processo();
+iniciar_processo();
 
 //iniciar processo de alimentação de tabela
  //alimenta_tabela();
@@ -26,11 +26,12 @@ int main() {
  
 
 
- select_alimento sa[5];  // array para armazenar as escolhas
+ //select_alimento sa[5];  // array para armazenar as escolhas
 
-   select_menu(sa);        // chama a função que preenche as escolhas
-infor_nutri_alimento saida[5];
-table_nutriction(saida,sa);
+
+//select_menu(sa);        // chama a função que preenche as escolhas
+//infor_nutri_alimento saida[5];
+//table_nutriction(saida,sa);
 
    system("pause");
   

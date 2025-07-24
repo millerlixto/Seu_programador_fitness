@@ -13,6 +13,8 @@ typedef struct {
 
 /**************funções genéricas****************/
 
+//remover espaços no início e no fim das strings
+void trim(char *str);
 //seleciona o fator de ativiadade
 void definir_fator_atividade_ativo(ativ_fisica *at);
 //seleciona o fator de atividade para usuários menos ativos
@@ -31,24 +33,23 @@ double convert_Cm_Para_Metro(user *u);
 /**************calculos****************/
 //função calcula TMB
 double calc_TMB(user *u);
-//Calculando o Gasto Calórico Total
-//O GCT inclui a TMB, 
-//mas também leva em consideração a 
-//energia gasta em atividades físicas
+//Calculando o Gasto Calórico Total, o GCT inclui a TMB, 
+//também leva em consideração a energia gasta em atividades físicas
 double calc_GET(ativ_fisica *at, user *u);
 //calculo do IMC ínice de maça corporal
 void calc_IMC(user *u);
+//Seleção de alimento no menu
+void select_menu(select_alimento* sa);
 //calculo dos macros
 void calc_Macros(user *u,ativ_fisica* at, select_alimento* sa);
-// calcula a idade mas próxima da tabela
-int buscar_idade_mais_proxima(user* u);
+//recebe o peso da struct user e aproxima segundo tabela, que contem intervalos de 5kg
+int aproxima_peso(user* u);
 
 /**************impressão****************/
 //função de impressão de dados das funções de da biblioteca other_functions
 void imprimir_Dados_Other_Functions(ativ_fisica *at, user *u);
 
-/**************impressão de plano alimentar****************/
-void select_menu(select_alimento* sa);
+
 
 
 

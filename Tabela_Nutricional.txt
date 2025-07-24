@@ -1,5 +1,5 @@
 proteinas
-file de peito de frango cozido, 195.00 29.55 0.00 7.72
+file de peito de frango cozido, 165.00 31.00 0.00 3.60
 ovo cozido inteiro, 154.00 12.53 1.12 10.57
 carne bovina magra cozida, 250.00 26.00 0.00 15.00
 atum em agua, 132.00 29.00 0.00 1.00
@@ -52,3 +52,4 @@ agua com gas, 0.00 0.00 0.00 0.00
 suco de uva integral, 60.00 0.10 15.00 0.00
 cha de camomila, 1.00 0.00 0.26 0.00
 refrigerante zero, 1.00 0.00 1.00 0.00
+

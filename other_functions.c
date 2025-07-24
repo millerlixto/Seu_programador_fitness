@@ -15,10 +15,33 @@
 #define NOME 50
 #define QNT_ALIMENTO 11
 
-#define IDADES 26
-#define INTERVALO_IDADES 5
+#define PESOS 26
+#define INTERVALO_PESO 5
 
 /**************funções genéricas****************/
+
+// Remove espaços em branco no início e fim da string
+void trim(char *str) {
+    char *inicio = str;
+    char *fim;
+
+    // Avança ponteiro para o primeiro caractere não-espaço
+    while (*inicio == ' ' || *inicio == '\t' || *inicio == '\n') {
+        inicio++;
+    }
+
+    // Move o conteúdo ajustado para o início da string
+    if (str != inicio) {
+        memmove(str, inicio, strlen(inicio) + 1);
+    }
+
+    // Agora remove os espaços do final
+    fim = str + strlen(str) - 1;
+    while (fim >= str && (*fim == ' ' || *fim == '\t' || *fim == '\n')) {
+        *fim = '\0';
+        fim--;
+    }
+}
 
 //recede a intesidade da atividade física
 
@@ -288,6 +311,7 @@ void select_menu(select_alimento* sa) {
         // Copia a string escolhida
         strcpy(sa[grupo].alimentos_escolhidos, alimentos[grupo][escolha]);
 
+
         // Pausa e limpa a tela (opcional, Windows)
         system("pause");
         system("cls");
@@ -306,32 +330,37 @@ void calc_Macros(user *u, ativ_fisica* at, select_alimento* sa){
 }
 
 
-/**************idade mais próxima****************/
-int buscar_idade_mais_proxima(user*u) {
-    //alocando memoria para vetor de idades
-    int* idade = (int*)malloc(IDADES*sizeof(int));
-    if(idade == NULL){
-        printf("Erro memória não alocada");
-        return 1;
+/**************peso mais próximo****************/
+//recebe o peso da struct user e aproxima segundo tabela, que contem intervalos de 5kg
+int aproxima_peso(user* u) {
+    // Alocando memória para vetor de pesos
+    int* peso = (int*)malloc(PESOS * sizeof(int));
+    if (peso == NULL) {
+        printf("Erro: memória não alocada\n");
+        return -1;
     }
-    //caregando vetor de idades
-    
-    for(int i = 1;i<IDADES;i++){
-    idade[i] = i*INTERVALO_IDADES;
-}
-    
-    int indice_mais_proximo = 0;
-    int menor_diferenca = abs(idade[0] - u->idade);
 
-    for (int i = 1; i < IDADES; i++) {
-        int diferenca = abs(idade[i] - u->idade);
+    // Preenchendo o vetor com múltiplos de INTERVALO_PESO
+    for (int i = 0; i < PESOS; i++) {
+        peso[i] = (i + 1) * INTERVALO_PESO; // começa de 1*INTERVALO
+    }
+
+    // Encontrando o peso mais próximo
+    int indice_mais_proximo = 0;
+    int menor_diferenca = abs(peso[0] - u->peso);
+
+    for (int i = 1; i < PESOS; i++) {
+        int diferenca = abs(peso[i] - u->peso);
         if (diferenca < menor_diferenca) {
             menor_diferenca = diferenca;
             indice_mais_proximo = i;
         }
     }
-free(idade);
-    return idade[indice_mais_proximo];
+
+    int peso_aproximado = peso[indice_mais_proximo];  // SALVAR antes de liberar
+    free(peso);
+
+    return peso_aproximado;  // RETORNAR valor válido
 }
 
 /**************impressão****************/

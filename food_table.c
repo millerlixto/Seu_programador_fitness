@@ -17,70 +17,94 @@
 
 
 
+/*************************************************macros_por_peso*****************************************************
+a Função  preenche as macros nutrientes para um usuário com base no peso e na intensidade da atividade física
+Parâmetros:
+   - user *u: aponta para struct com as informações do peso
+   - ativ_fisica *at: aponta para a struct com a informação da intensidade da atividade física (nível 0 a 4)
+   - MacrosNutr *saida: aponta para a struct onde os dados lidos serão armazenados
+ Retorno:
+   - 1 se os dados forem encontrados e preenchidos corretamente
+   - 0 se houver erro (peso não encontrado ou falha ao abrir o arquivo)
+   *********************************************************************************************************************/
+
 int macros_por_peso(user *u, ativ_fisica *at, MacrosNutr *saida){
 
-    int peso = u->peso;
+    // recebe o peso do usuário e o nível de atividade física das structs "user" e "ativ_fisica"    
+    //aproxima o peso passado pelo usuário. Porque a tabela é organizada em intervalos de 5 kg
+    int peso = aproxima_peso (u);
     int niveisAtiv = at->intensidade;
 
-
+    // Verifica se o nível de atividade está dentro dos limites válidos (de 0 a 4)
     if (niveisAtiv < 0 || niveisAtiv > 4) return 0; // índice inválido
 
+    // tenta abrir o arquivo tabela de macros
     FILE *f = fopen("macros_tabela.txt", "r");
     if (!f) {
-        perror("Erro ao abrir arquivo");
+        printf("Erro ao abrir arquivo"); // exibe erro se não conseguir abrir
         return 0;
     }
 
+    // Variável para armazenar a linha do peso tual
     int linhaPeso;
+
+    // Amazena 20 valores (5 níveis × 4 macros por nível)
     float valores[20];
 
+    // Ler arquivo linha por linha
     while (fscanf(f, "%d", &linhaPeso) == 1) {
+        // Lê os 20 valores (4 macros × 5 níveis) da linha
         int r = fscanf(f, "%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f",
-                        &valores[0], &valores[1], &valores[2], &valores[3],
-                        &valores[4], &valores[5], &valores[6], &valores[7],
-                        &valores[8], &valores[9], &valores[10], &valores[11],
-                        &valores[12], &valores[13], &valores[14], &valores[15],
-                        &valores[16], &valores[17], &valores[18], &valores[19]);
+                        &valores[0], &valores[1], &valores[2], &valores[3],//nível 1
+                        &valores[4], &valores[5], &valores[6], &valores[7],//nível 2
+                        &valores[8], &valores[9], &valores[10], &valores[11],//nível 3
+                        &valores[12], &valores[13], &valores[14], &valores[15],//nível 4
+                        &valores[16], &valores[17], &valores[18], &valores[19]);//nível 5
 
+        // Se a linha estiver incompleta, sai do loop
         if (r != 20) break;
 
+        // Verifica se o peso na linha corresponde ao peso passado pelo usuário
         if (linhaPeso == peso) {
+            // Copia os 4 valores correspondentes ao nível de atividade física
+            // multiplica o nível pela quantidade de macros (pula para linha do nível)
+            // O indice i vai varrendo a linha
             for (int i = 0; i < 4; i++) {
                 saida->grupo[i] = valores[niveisAtiv * 4 + i];
             }
+
+            // peso encontrado vai para struct "MacrosNutr"
             saida->peso = linhaPeso;
+
+            // Fecha o arquivo
             fclose(f);
-// Impressão para confirmar
+
+            /****************Impressões para validação*******************
             printf("Peso encontrado: %d\n", saida->peso);
             printf("Grupo %d (4 floats): ", niveisAtiv);
             for (int i = 0; i < 4; i++) {
                 printf("%.2f ", saida->grupo[i]);
             }
+            *******************************************************************/
             printf("\n");
 
+            // Retorna sucesso
             return 1;
         }
     }
 
+    // Fecha o arquivo se o peso não foi encontrado
     fclose(f);
+
+    // Mensagem de erro caso o peso não exista no arquivo
     printf("Peso %d nao encontrado no arquivo.\n", peso);
+
+    // Retorna falha
     return 0;
 }
 
 /***********************************Busca e retorna o alimento e seus macronutrientes******************************************/
-// Função para remover espaços no início e no fim
-void trim(char *str) {
-    char *end;
-    // Remove espaços iniciais
-    while (*str == ' ') str++;
-    if (*str == 0) return;
-    // Remove espaços finais e quebras de linha
-    end = str + strlen(str) - 1;
-    while (end > str && (*end == ' ' || *end == '\n' || *end == '\r')) {
-        *end = '\0';
-        end--;
-    }
-}
+
 
 int table_nutriction(infor_nutri_alimento* saida, select_alimento* sa) {
     for (int j = 0; j < QUANT_ALIMENTO; j++) {
@@ -95,7 +119,7 @@ int table_nutriction(infor_nutri_alimento* saida, select_alimento* sa) {
         char *nomeAlimento;
         float valores[4];
         int encontrado = 0;
-
+       
         // Limpa espaços extras do nome escolhido pelo usuário
         trim(sa[j].alimentos_escolhidos);
 
@@ -104,6 +128,8 @@ int table_nutriction(infor_nutri_alimento* saida, select_alimento* sa) {
 
             nomeAlimento = strtok(linha, ",");
             if (!nomeAlimento) continue;
+            // Limpa espaços extras do nome escolhido pelo usuário
+               trim(nomeAlimento);
 
             while (*nomeAlimento == ' ') nomeAlimento++;
             nomeAlimento[strcspn(nomeAlimento, "\n")] = '\0';
@@ -112,7 +138,12 @@ int table_nutriction(infor_nutri_alimento* saida, select_alimento* sa) {
                        &valores[0], &valores[1], &valores[2], &valores[3]) != 4) {
                 continue;
             }
+/********tratamento de erro, espaço a direita da string - strcmp sensível a espaços**************
 
+printf("Comparando: |%s| <-> |%s|\n", nomeAlimento, sa[j].alimentos_escolhidos);
+printf("Tamanhos: %zu vs %zu\n", strlen(nomeAlimento), strlen(sa[j].alimentos_escolhidos));
+
+**********************tratamento de erro*****************************************************/             
             if (strcmp(nomeAlimento, sa[j].alimentos_escolhidos) == 0) {
                 strncpy(saida->alimento[j], nomeAlimento, TAM_NOME - 1);
                 saida->alimento[j][TAM_NOME - 1] = '\0';
@@ -126,16 +157,28 @@ int table_nutriction(infor_nutri_alimento* saida, select_alimento* sa) {
         }
         fclose(f);
 
-        if (!encontrado) {
+     if (!encontrado) {
             printf("Alimento \"%s\" nao encontrado na tabela.\n", sa[j].alimentos_escolhidos);
-        } else {
+            
+        } 
+        /**********************impressão dos dados gerados**********************************
+        else {
             printf("\nAlimento: %s\n", saida->alimento[j]);
-            printf("Informação nutricional para 100g (Kcal, Proteina, Carboidrato, Gordura): ");
+            printf("Informacao nutricional para 100g (Kcal, Proteina, Carboidrato, Gordura): ");
             for (int i = 0; i < 4; i++) {
                 printf("%.2f ", saida->macros_para_100g[j][i]);
             }
             printf("\n");
         }
+        ***************************************************************************************/
+/********verificação de gravação na struct**************            
+            printf(">>> Copiado: %s | %.2f %.2f %.2f %.2f\n",
+       saida->alimento[j],
+       saida->macros_para_100g[j][0],
+       saida->macros_para_100g[j][1],
+       saida->macros_para_100g[j][2],
+       saida->macros_para_100g[j][3]);
+/**************************************************************/
     }
     return 1;
 }

@@ -25,8 +25,7 @@ typedef struct {
 } Atividade;
 
 // Guarda os macros nutrientes e calorias totais diárias
-// a ser consumida pelo usuário, 
-//baseado no peso e nivél de ativiade física do usuário
+// a ser consumida pelo usuário, baseado no peso e nivél de ativiade física do usuário
 typedef struct {
     int peso;
     float grupo[4];    
@@ -43,7 +42,8 @@ typedef struct{
  char menu_carb[0];
 }menu;
 
-//Função recebe peso e nível de atividade, retorna 1 se achou, 0 caso contrário guarda na struct MACROSNUTR
+//Função recebe peso e nível de atividade, retorna 1 se achou, 0 caso contrário. Guarda na struct "MacrusNutr"
+// peso e os macros nutrientes relacionado ao peso e nível de atividade
 int macros_por_peso(user *u, ativ_fisica *at, MacrosNutr *saida);
 
 // recebe os alimentos de select_alimentos e guarda os macros para cada 100g na struct INFOR_NUTRI
