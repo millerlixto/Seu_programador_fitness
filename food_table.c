@@ -7,8 +7,7 @@
 #include "other_functions.h"
 
 
-#define QUANT_ALIMENT0 2
-#define TAM_ALIMENTO 50
+#define QUANT_ALIMENTO 5
 #define TAM_NOME 50
 #define TAM_LINHA 250
 #define QUANT_PROT 2
@@ -69,45 +68,76 @@ int macros_por_peso(user *u, ativ_fisica *at, MacrosNutr *saida){
 }
 
 /***********************************Busca e retorna o alimento e seus macronutrientes******************************************/
-int table_nutriction(infor_nutri_alimento *saida){
-
-char alimento[] = "frango";
-
-    FILE *f = fopen("Tabela_Nutricional.txt", "r");
-    if (!f) {
-        perror("Erro ao abrir arquivo");
-        return 0;
+// Função para remover espaços no início e no fim
+void trim(char *str) {
+    char *end;
+    // Remove espaços iniciais
+    while (*str == ' ') str++;
+    if (*str == 0) return;
+    // Remove espaços finais e quebras de linha
+    end = str + strlen(str) - 1;
+    while (end > str && (*end == ' ' || *end == '\n' || *end == '\r')) {
+        *end = '\0';
+        end--;
     }
+}
 
-    char linhaAlimento[TAM_ALIMENTO];
+int table_nutriction(infor_nutri_alimento* saida, select_alimento* sa) {
+    for (int j = 0; j < QUANT_ALIMENTO; j++) {
 
-    float valores[4];
+        FILE *f = fopen("Tabela_Nutricional.txt", "r");
+        if (!f) {
+            perror("Erro ao abrir arquivo");
+            return 0;
+        }
 
-    while  (fscanf(f, "%s %f %f %f %f",
-                  linhaAlimento,
-                  &valores[0], &valores[1], &valores[2], &valores[3]) == 5) {
-        
-        if (strcmp(linhaAlimento, alimento) == 0) {
-            for (int i = 0; i < 4; i++) {
-                saida->macros_para_100g[i] = valores[i];
+        char linha[256];
+        char *nomeAlimento;
+        float valores[4];
+        int encontrado = 0;
+
+        // Limpa espaços extras do nome escolhido pelo usuário
+        trim(sa[j].alimentos_escolhidos);
+
+        while (fgets(linha, sizeof(linha), f)) {
+            if (strchr(linha, ',') == NULL) continue;
+
+            nomeAlimento = strtok(linha, ",");
+            if (!nomeAlimento) continue;
+
+            while (*nomeAlimento == ' ') nomeAlimento++;
+            nomeAlimento[strcspn(nomeAlimento, "\n")] = '\0';
+
+            if (sscanf(strtok(NULL, ""), "%f %f %f %f",
+                       &valores[0], &valores[1], &valores[2], &valores[3]) != 4) {
+                continue;
             }
-            strcpy(saida->alimento, linhaAlimento);
-            fclose(f);
-// Impressão d confirmação
-            printf("Alimento: %s\n", saida->alimento);
-            printf("Informacao nutriconal para 100g (Kcal, proteina, carboidrato, gordura): ");
+
+            if (strcmp(nomeAlimento, sa[j].alimentos_escolhidos) == 0) {
+                strncpy(saida->alimento[j], nomeAlimento, TAM_NOME - 1);
+                saida->alimento[j][TAM_NOME - 1] = '\0';
+
+                for (int i = 0; i < 4; i++) {
+                    saida->macros_para_100g[j][i] = valores[i];
+                }
+                encontrado = 1;
+                break;
+            }
+        }
+        fclose(f);
+
+        if (!encontrado) {
+            printf("Alimento \"%s\" nao encontrado na tabela.\n", sa[j].alimentos_escolhidos);
+        } else {
+            printf("\nAlimento: %s\n", saida->alimento[j]);
+            printf("Informação nutricional para 100g (Kcal, Proteina, Carboidrato, Gordura): ");
             for (int i = 0; i < 4; i++) {
-                printf("%.2f ", saida->macros_para_100g[i]);
+                printf("%.2f ", saida->macros_para_100g[j][i]);
             }
             printf("\n");
-
-            return 1;
         }
     }
-
-    fclose(f);
-    printf("Alimento %s nao encontrado no arquivo.\n", alimento);
-    return 0;
+    return 1;
 }
 /***********************************Gerar tabela nutricional******************************************/
 
@@ -115,7 +145,7 @@ char alimento[] = "frango";
 void recebe_alimentos(recebeAlimento a[]) {
     int limp;
 
-    for (int i = 0; i < QUANT_ALIMENT0; i++) {
+    for (int i = 0; i < QUANT_ALIMENTO; i++) {
         printf("\n******************************Inicia processo de alimentacao da tabela*********************************\n");
 
         ler_string(a[i].nome_alimento, TAM_NOME, "\nAlimento: ");
@@ -146,7 +176,7 @@ FILE *f = fopen("Tabela_Nutricional.txt", "w");
     }
 
 // carregar QUANT_ALIMENT0 no arquivo
-    for(int i=0; i<QUANT_ALIMENT0; i++){
+    for(int i=0; i<QUANT_ALIMENTO; i++){
     fprintf(f, "%s", a[i].nome_alimento);
         fprintf(f, " %.2f %.2f %.2f %.2f\n", a[i].calorias, a[i].proteina, a[i].carboidrato, a[i].gordura);
     }

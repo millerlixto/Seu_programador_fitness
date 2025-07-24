@@ -4,12 +4,13 @@
 #include "user.h"
 #include "other_functions.h"
 
-#define TAM_ALIMENTO 50
+#define TAM_NOME 50
+#define QUANT_ALIMENTO 5
 
 //recebe entrada do usuário para carregar
 //aquivo com as opçoes de alimentos, na tabela nutricional
 typedef struct{
-char nome_alimento[TAM_ALIMENTO];
+char nome_alimento[TAM_NOME];
 float calorias;
 float proteina;
 float carboidrato;
@@ -23,7 +24,7 @@ typedef struct {
     float gord;
 } Atividade;
 
-// Quarda os macros nutrientes e calorias totais diárias
+// Guarda os macros nutrientes e calorias totais diárias
 // a ser consumida pelo usuário, 
 //baseado no peso e nivél de ativiade física do usuário
 typedef struct {
@@ -31,21 +32,22 @@ typedef struct {
     float grupo[4];    
 } MacrosNutr;
 
+//agrupa os alimentos com os macros para cada 100g 
 typedef struct {
-    char alimento[TAM_ALIMENTO];          //  (alimento)
-    float macros_para_100g[0];    // macros para cada 100g de alimento
-}infor_nutri_alimento;
+    char alimento[QUANT_ALIMENTO][TAM_NOME];  // nomes dos alimentos encontrados
+    float macros_para_100g[QUANT_ALIMENTO][4]; // Kcal, Prot, Carb, Gord
+} infor_nutri_alimento;
 
 typedef struct{
  char menu_prot[0];
  char menu_carb[0];
 }menu;
 
-//Função recebe peso e nível de atividade, retorna 1 se achou, 0 caso contrário
+//Função recebe peso e nível de atividade, retorna 1 se achou, 0 caso contrário guarda na struct MACROSNUTR
 int macros_por_peso(user *u, ativ_fisica *at, MacrosNutr *saida);
 
-//função retorna os macros nutrientes por alimento
-int table_nutriction(infor_nutri_alimento *saida);
+// recebe os alimentos de select_alimentos e guarda os macros para cada 100g na struct INFOR_NUTRI
+int table_nutriction(infor_nutri_alimento* saida, select_alimento* sa);
 
 
 /***********************************Gerar alimentos na tabela nutricional******************************************/

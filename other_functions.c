@@ -13,7 +13,7 @@
 
 #define GRUPO 5
 #define NOME 50
-#define QNT_ALIMENTO 10
+#define QNT_ALIMENTO 11
 
 #define IDADES 26
 #define INTERVALO_IDADES 5
@@ -71,7 +71,7 @@ void definir_fator_atividade_MenosAtivo(ativ_fisica *at){
 int return_scanf;// tratamento de entrada
 int valida = 0;
 do{
-printf("\nSelecione a opcao que mais combina com seu estilo de vida: 0 ou 1, sendo:\n");
+printf("\nSelecione a opcao que mais combina com seu estilo de vida: 0 ou 1, sendo:\n\n");
 printf("-0 para sedentario(trabalha de escritorio, passa maior parte do dia sentado. \n\n"); 
 printf("-1 para levemente ativo(Caminhadas curtas, tarefas domesticas leves, subir escadas ocasionalmente.)\n");
 
@@ -216,55 +216,87 @@ void select_menu(select_alimento* sa) {
         return;
     }
 
-    char linha[TAM_LINHA];
+    char linha[TAM_LINHA];  // Buffer para leitura de linhas
     char* token;
-    char alimentos[GRUPO][QNT_ALIMENTO][NOME];
-    int total_grupos = 0;
 
-    // Leitura e separação dos alimentos por grupo
+    // Matriz com nomes dos alimentos lidos do arquivo
+    char alimentos[GRUPO][QNT_ALIMENTO][NOME] = {{{0}}};  // Limpa todos os dados
+    int total_grupos = 0;  // Contador de grupos
+
+    /**************************************
+     * Leitura e separação dos alimentos *
+     **************************************/
     while (fgets(linha, sizeof(linha), f) != NULL && total_grupos < GRUPO) {
-        
-        linha[strcspn(linha, "\n")] = '\0';
-        int alimento_idx = 0;
+        linha[strcspn(linha, "\n")] = '\0';  // Remove \n do final da linha
 
+        int alimento_idx = 0;
         token = strtok(linha, ",");
+
+        // Separa alimentos da linha atual
         while (token != NULL && alimento_idx < QNT_ALIMENTO) {
             strncpy(alimentos[total_grupos][alimento_idx], token, NOME - 1);
-            alimentos[total_grupos][alimento_idx][NOME - 1] = '\0';
-            token = strtok(NULL, ",");
+            alimentos[total_grupos][alimento_idx][NOME - 1] = '\0';  // Garante final da string
             alimento_idx++;
+            token = strtok(NULL, ",");  // Próximo token
         }
 
         total_grupos++;
     }
 
-    fclose(f);
+    fclose(f);  // Fecha o arquivo
 
-    // Seleção do usuário
+    /**************************************
+     * Escolha dos alimentos pelo usuário *
+     **************************************/
     for (int grupo = 0; grupo < total_grupos; grupo++) {
         printf("Escolha 1 alimento do grupo %s:\n", alimentos[grupo][0]);
-        for (int i = 0; i < QNT_ALIMENTO && alimentos[grupo][i][0] != '\0'; i++) {
-            printf("%d - %s\n", i + 1, alimentos[grupo][i+1]);
-            
+
+        // Lista alimentos disponíveis para esse grupo
+        for (int i = 1; i < QNT_ALIMENTO && alimentos[grupo][i][0] != '\0'; i++) {
+            printf("%d - %s\n", i, alimentos[grupo][i]);
         }
 
         int escolha;
         do {
             printf("Sua escolha: ");
             scanf("%d", &escolha);
-            escolha +=1;
-            if (escolha < 1 || escolha > QNT_ALIMENTO || alimentos[grupo][escolha - 1][0] == '\0') {
+
+            // Verifica se o número é válido
+            if (escolha < 1 || escolha >= QNT_ALIMENTO || alimentos[grupo][escolha][0] == '\0') {
                 printf("Opção inválida. Tente novamente.\n");
             }
-        } while (escolha < 1 || escolha > QNT_ALIMENTO || alimentos[grupo][escolha - 1][0] == '\0');
+        } while (escolha < 1 || escolha >= QNT_ALIMENTO || alimentos[grupo][escolha][0] == '\0');
 
-        strcpy(sa[grupo].alimentos_escolhidos, alimentos[grupo][escolha - 1]);
-         system ("pause");
-         system ("cls");
+        /*************************************
+         * Copiando o alimento para a struct *
+         *************************************/
+
+        // Libera memória anterior, se houver
+        if (sa[grupo].alimentos_escolhidos != NULL) {
+            free(sa[grupo].alimentos_escolhidos);
+        }
+
+        // Aloca memória exata para o alimento escolhido (+1 para '\0')
+        sa[grupo].alimentos_escolhidos = malloc(strlen(alimentos[grupo][escolha]) + 1);
+
+        // Verifica se a alocação funcionou
+        if (sa[grupo].alimentos_escolhidos == NULL) {
+            printf("Erro de memória.\n");
+            exit(1);  // ou `return` dependendo do seu controle de erros
+        }
+
+        // Copia a string escolhida
+        strcpy(sa[grupo].alimentos_escolhidos, alimentos[grupo][escolha]);
+
+        // Pausa e limpa a tela (opcional, Windows)
+        system("pause");
+        system("cls");
     }
 
-    // Mostra escolhas
-    printf("\nAlimentos escolhidos:\n");
+    /**************************************
+     * Mostra escolhas feitas pelo usuário
+     **************************************/
+    printf("\nAlimentos escolhidos:\n\n");
     for (int i = 0; i < total_grupos; i++) {
         printf("Grupo %d: %s\n", i + 1, sa[i].alimentos_escolhidos);
     }
