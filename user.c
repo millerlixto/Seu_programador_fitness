@@ -118,6 +118,7 @@ void perguntar_peso(user *u) {
     do {
         printf("Qual seu peso (kg)?: ");
         return_scanf = scanf(" %f", &u->peso);
+        limpar_buffer();
 
         if (return_scanf != 1) {
             printf("\n\nErro: Peso invalido! Digite apenas numeros.");

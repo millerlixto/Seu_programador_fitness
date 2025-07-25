@@ -14,7 +14,7 @@ typedef struct {
 /**************funções genéricas****************/
 
 //remover espaços no início e no fim das strings
-void trim(char *str);
+void remove_espacos(char *str);
 //seleciona o fator de ativiadade
 void definir_fator_atividade_ativo(ativ_fisica *at);
 //seleciona o fator de atividade para usuários menos ativos

@@ -11,7 +11,6 @@
 
 
 
-
 void iniciar_processo(void);
 void alimenta_tabela(void);
 

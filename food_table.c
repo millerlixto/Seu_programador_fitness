@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #include "food_table.h"
 #include "user.h"
@@ -33,6 +34,7 @@ int macros_por_peso(user *u, ativ_fisica *at, MacrosNutr *saida){
     // recebe o peso do usuário e o nível de atividade física das structs "user" e "ativ_fisica"    
     //aproxima o peso passado pelo usuário. Porque a tabela é organizada em intervalos de 5 kg
     int peso = aproxima_peso (u);
+    
     int niveisAtiv = at->intensidade;
 
     // Verifica se o nível de atividade está dentro dos limites válidos (de 0 a 4)
@@ -76,16 +78,17 @@ int macros_por_peso(user *u, ativ_fisica *at, MacrosNutr *saida){
             // peso encontrado vai para struct "MacrosNutr"
             saida->peso = linhaPeso;
 
+
             // Fecha o arquivo
             fclose(f);
 
-            /****************Impressões para validação*******************
-            printf("Peso encontrado: %d\n", saida->peso);
-            printf("Grupo %d (4 floats): ", niveisAtiv);
-            for (int i = 0; i < 4; i++) {
-                printf("%.2f ", saida->grupo[i]);
-            }
-            *******************************************************************/
+            //****************Impressões para validação*******************
+          //  printf("Peso encontrado: %d\n", saida->peso);
+         //   printf("Grupo %d (4 floats): ", niveisAtiv);
+          //  for (int i = 0; i < 4; i++) {
+          //      printf("%.2f ", saida->grupo[i]);
+           // }
+           // *******************************************************************/
             printf("\n");
 
             // Retorna sucesso
@@ -95,10 +98,9 @@ int macros_por_peso(user *u, ativ_fisica *at, MacrosNutr *saida){
 
     // Fecha o arquivo se o peso não foi encontrado
     fclose(f);
-
-    // Mensagem de erro caso o peso não exista no arquivo
-    printf("Peso %d nao encontrado no arquivo.\n", peso);
-
+     //*********************Impressão de validação***************************
+   // printf("Peso nao encontrado no arquivo.\n");
+    //**********************************************************************
     // Retorna falha
     return 0;
 }
@@ -121,7 +123,7 @@ int table_nutriction(infor_nutri_alimento* saida, select_alimento* sa) {
         int encontrado = 0;
        
         // Limpa espaços extras do nome escolhido pelo usuário
-        trim(sa[j].alimentos_escolhidos);
+        remove_espacos(sa[j].alimentos_escolhidos);
 
         while (fgets(linha, sizeof(linha), f)) {
             if (strchr(linha, ',') == NULL) continue;
@@ -129,7 +131,7 @@ int table_nutriction(infor_nutri_alimento* saida, select_alimento* sa) {
             nomeAlimento = strtok(linha, ",");
             if (!nomeAlimento) continue;
             // Limpa espaços extras do nome escolhido pelo usuário
-               trim(nomeAlimento);
+               remove_espacos(nomeAlimento);
 
             while (*nomeAlimento == ' ') nomeAlimento++;
             nomeAlimento[strcspn(nomeAlimento, "\n")] = '\0';
@@ -171,14 +173,14 @@ printf("Tamanhos: %zu vs %zu\n", strlen(nomeAlimento), strlen(sa[j].alimentos_es
             printf("\n");
         }
         ***************************************************************************************/
-/********verificação de gravação na struct**************            
-            printf(">>> Copiado: %s | %.2f %.2f %.2f %.2f\n",
-       saida->alimento[j],
-       saida->macros_para_100g[j][0],
-       saida->macros_para_100g[j][1],
-       saida->macros_para_100g[j][2],
-       saida->macros_para_100g[j][3]);
-/**************************************************************/
+//********verificação de gravação na struct**************            
+ //           printf(">>> Copiado com sucesso: %s | %.2f %.2f %.2f %.2f\n",
+ //      saida->alimento[j],
+ //      saida->macros_para_100g[j][0],
+ //      saida->macros_para_100g[j][1],
+ //      saida->macros_para_100g[j][2],
+ //      saida->macros_para_100g[j][3]);
+//**************************************************************/
     }
     return 1;
 }

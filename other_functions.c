@@ -20,26 +20,48 @@
 
 /**************funções genéricas****************/
 
-// Remove espaços em branco no início e fim da string
-void trim(char *str) {
-    char *inicio = str;
-    char *fim;
+// Função para remover espaços em branco no início e fim de uma string
+void remove_espacos(char *str) {
+    char *inicio = str; // Ponteiro percorrer do início da string
+    char *fim;          // Ponteiro que encontrará o final da string
 
-    // Avança ponteiro para o primeiro caractere não-espaço
+    // *******************************
+    // Remove espaços do início
+    // *******************************
+
+    // Ponteiro 'inicio' avança até encontrar o primeiro caractere útil.
+    // ignora espaço, tabulação e quebra de linha
     while (*inicio == ' ' || *inicio == '\t' || *inicio == '\n') {
         inicio++;
     }
-
-    // Move o conteúdo ajustado para o início da string
+    // Se houve espaços a esquerda 'memmove' move os dados úteis para o início da string.
+    // Sobrescrevendo os espaços iniciais.
     if (str != inicio) {
-        memmove(str, inicio, strlen(inicio) + 1);
+
+        //**************************************************memmove********************************************
+       // strlen(inicio) calcula o tamanho dos caracteres úteis (sem contar espaços no início).
+       //+ 1 é adicionado para incluir o caractere, que indica o fim da string.
+      // A função 'memmove(destino, origem, tamanho)' move a parte útil da string para o início. Removendo os espaços iniciais.
+     //********************************************************************************************************
+        memmove(str, inicio, strlen(inicio) + 1); 
     }
 
-    // Agora remove os espaços do final
+    // *******************************
+    //  Remove espaços do final
+    // *******************************
+
+    // Ponteiro 'fim' aponta para o último caractere da string 
+    // strlen(inicio) calcula o tamanho dos caracteres úteis (sem contar espaços no início).
+    //str + strlen(str) joga o ponteiro para o caracter nulo '\0' (fim de estring) 
+    //por isso -1 ajusta o ponteiro para voltar ao ultimo caracter útil
     fim = str + strlen(str) - 1;
+
+    
+    // Se encontrar espaço, tabulação ou quebra de linha,
+    // substitui por '\0' e anda para trás, até um caracter útil.
     while (fim >= str && (*fim == ' ' || *fim == '\t' || *fim == '\n')) {
-        *fim = '\0';
-        fim--;
+        *fim = '\0'; // Remove o caractere colocando fim de string
+        fim--;       // Volta um caractere
     }
 }
 
@@ -56,36 +78,30 @@ printf("- 0 para sedentario(trabalha de escritorio, passa maior parte do dia sen
 printf("- 1 para levemente ativo(Caminhadas curtas, tarefas domesticas leves, subir escadas ocasionalmente.): \n\n");
 printf("- 2 para moderadamente ativo(Corrida leve, natacao, ciclismo, musculacao ou aulas de ginastica na academia.): \n\n");
 printf("- 3 para muito ativo(Maratonistas, atletas que treinam quase todos os dias, esportes coletivos de alta intensidade, musculacao pesada frequente.)\n\n");
-printf("- 4 para extremamente ativo(Atletas de alta performance, trabalhos com grande esforço físico contínuo (ex: construcao civil).): \n");
+printf("- 4 para extremamente ativo(Atletas de alta performance, trabalhos com grande esforco fisico continuo (ex: construcao civil).): \n");
 
 //tratamento de entrada com scanf
 //O scanf retorna o numero de leituras com sucesso 
 //0 se a conversão falou e EOF(-1), se chegou ao fim do arquivo
 // ou houve erro de leitura
 return_scanf = scanf(" %d", &at->intensidade);
-
+limpar_buffer();
 // se o scanf receber uma quantidade diferende de argumentos que o esperado 
 //pela entrado do usuários, as mensagens de erro são enviadas.
 if(return_scanf != 1){//um argumento esperado, retorno do scanf 1.
 
 printf("Erro: duracao invalida. Apenas numeros inteiros.\n");
-// Limpa buffer
-            int limp;
-            while ((limp = getchar()) != '\n' && limp != EOF);
+limpar_buffer();
 }else if(at->intensidade < 0 || at->intensidade >4){
 printf("Erro: intensidade invalida. Fora do intervalo (0 a 4).\n");
-// Limpa buffer
-            int limp;
-            while ((limp = getchar()) != '\n' && limp != EOF);
+limpar_buffer();
 }else{
 valida = 1;
-// Limpa buffer
-            int limp;
-            while ((limp = getchar()) != '\n' && limp != EOF);
+limpar_buffer();
 }
 }while(!valida);
-
- printf("Intensidade escolhida: %d\n", at->intensidade);
+//*****************impressão de validação********************
+// printf("Intensidade escolhida: %d\n", at->intensidade);
 }
 
 //recede a intesidade da atividade física de usuários menos ativo
@@ -103,24 +119,19 @@ printf("-1 para levemente ativo(Caminhadas curtas, tarefas domesticas leves, sub
 //0 se a conversão falou e EOF(-1), se chegou ao fim do arquivo
 // ou houve erro de leitura
 return_scanf = scanf(" %d", &at->intensidade);
+limpar_buffer();
 // se o scanf receber uma quantidade diferende de argumentos que o esperado 
 //pela entrado do usuários, as mensagens de erro são enviadas.
 if(return_scanf != 1){//um argumento esperado, retorno so scanf 1.
 
 printf("Erro: duracao invalida. Apenas numeros inteiros.\n");
-// Limpa buffer
-            int limp;
-            while ((limp = getchar()) != '\n' && limp != EOF);
-}else if(at->intensidade < 0 || at->intensidade >1){
-printf("Erro: intensidade invalida. Fora do intervalo (1 e 2).\n");
-// Limpa buffer
-            int limp;
-            while ((limp = getchar()) != '\n' && limp != EOF);
+limpar_buffer();
+}else if(at->intensidade < 0 || at->intensidade > 1){
+printf("Erro: intensidade invalida. Fora do intervalo (0 ou 1).\n");
+limpar_buffer();
 }else{
 valida = 1;
-// Limpa buffer
-            int limp;
-            while ((limp = getchar()) != '\n' && limp != EOF);
+limpar_buffer();
 }
 }while(!valida);
 }
@@ -160,7 +171,9 @@ void ler_string(char *buffer, int tamanho, const char *mensagem) {
         buffer[strcspn(buffer, "\n")] = '\0';
     }
 }
-//limpa o buffer
+
+
+//lipa Buffer
 void limpar_buffer() {
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
@@ -233,6 +246,8 @@ return;
 /**************seleção de alimento no menu****************/
 
 void select_menu(select_alimento* sa) {
+
+
     FILE *f = fopen("Menu.txt", "r");
     if (f == NULL) {
         perror("Erro ao abrir arquivo");
@@ -272,6 +287,7 @@ void select_menu(select_alimento* sa) {
      * Escolha dos alimentos pelo usuário *
      **************************************/
     for (int grupo = 0; grupo < total_grupos; grupo++) {
+         printf("\n************** Sugestao de Plano Alimentar ***************\n\n");
         printf("Escolha 1 alimento do grupo %s:\n", alimentos[grupo][0]);
 
         // Lista alimentos disponíveis para esse grupo
@@ -282,11 +298,13 @@ void select_menu(select_alimento* sa) {
         int escolha;
         do {
             printf("Sua escolha: ");
-            scanf("%d", &escolha);
+            scanf(" %d", &escolha);
+            // Limpa buffer 
+            limpar_buffer();
 
             // Verifica se o número é válido
             if (escolha < 1 || escolha >= QNT_ALIMENTO || alimentos[grupo][escolha][0] == '\0') {
-                printf("Opção inválida. Tente novamente.\n");
+                printf("Opcao invalida. Tente novamente.\n");
             }
         } while (escolha < 1 || escolha >= QNT_ALIMENTO || alimentos[grupo][escolha][0] == '\0');
 
@@ -320,6 +338,7 @@ void select_menu(select_alimento* sa) {
     /**************************************
      * Mostra escolhas feitas pelo usuário
      **************************************/
+    printf("\n************** Sugestao de Plano Alimentar ***************\n\n");
     printf("\nAlimentos escolhidos:\n\n");
     for (int i = 0; i < total_grupos; i++) {
         printf("Grupo %d: %s\n", i + 1, sa[i].alimentos_escolhidos);
@@ -333,6 +352,14 @@ void calc_Macros(user *u, ativ_fisica* at, select_alimento* sa){
 /**************peso mais próximo****************/
 //recebe o peso da struct user e aproxima segundo tabela, que contem intervalos de 5kg
 int aproxima_peso(user* u) {
+
+ // Verifica se o peso do usuário foi atribuído corretamente
+    if (u->peso <= 0) {
+        printf("Erro: peso do usuario nao foi definido. ");
+       return -1;
+
+    }
+
     // Alocando memória para vetor de pesos
     int* peso = (int*)malloc(PESOS * sizeof(int));
     if (peso == NULL) {
@@ -340,28 +367,32 @@ int aproxima_peso(user* u) {
         return -1;
     }
 
-    // Preenchendo o vetor com múltiplos de INTERVALO_PESO
+    // Preenchendo o vetor com múltiplos de INTERVALO_PESO (ex: 5, 10, 15...)
     for (int i = 0; i < PESOS; i++) {
-        peso[i] = (i + 1) * INTERVALO_PESO; // começa de 1*INTERVALO
+        peso[i] = (i + 1) * INTERVALO_PESO;
     }
+
+    // Converte o peso do usuário (float) para int com arredondamento
+    int peso_convertido = (int)(u->peso + 0.5);  // Arredonda para o inteiro mais próximo
 
     // Encontrando o peso mais próximo
     int indice_mais_proximo = 0;
-    int menor_diferenca = abs(peso[0] - u->peso);
+    int menor_diferenca = abs(peso[0] - peso_convertido);  // diferença inicial
 
     for (int i = 1; i < PESOS; i++) {
-        int diferenca = abs(peso[i] - u->peso);
+        int diferenca = abs(peso[i] - peso_convertido);
         if (diferenca < menor_diferenca) {
             menor_diferenca = diferenca;
             indice_mais_proximo = i;
         }
     }
 
-    int peso_aproximado = peso[indice_mais_proximo];  // SALVAR antes de liberar
-    free(peso);
+   int peso_aproximado = peso[indice_mais_proximo];  // salvar valor antes de liberar memória
+    free(peso);  // libera a memória alocada
 
-    return peso_aproximado;  // RETORNAR valor válido
+    return peso_aproximado;  // retorna o peso mais próximo da tabela
 }
+
 
 /**************impressão****************/
 
