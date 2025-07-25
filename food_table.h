@@ -7,8 +7,11 @@
 #define TAM_NOME 50
 #define QUANT_ALIMENTO 5
 
-//recebe entrada do usuário para carregar
-//aquivo com as opçoes de alimentos, na tabela nutricional
+/***********************************************/
+/*******************ESTRUTURAS******************/
+/***********************************************/
+
+//recebe lista de alimentos para gravar no menu
 typedef struct{
 char nome_alimento[TAM_NOME];
 float calorias;
@@ -42,6 +45,10 @@ typedef struct{
  char menu_carb[0];
 }menu;
 
+/***********************************************/
+/**************FUNÇÔES NUTRICINAIS**************/
+/***********************************************/
+
 //Função recebe peso e nível de atividade, retorna 1 se achou, 0 caso contrário. Guarda na struct "MacrusNutr"
 // peso e os macros nutrientes relacionado ao peso e nível de atividade
 int macros_por_peso(user *u, ativ_fisica *at, MacrosNutr *saida);
@@ -50,7 +57,11 @@ int macros_por_peso(user *u, ativ_fisica *at, MacrosNutr *saida);
 int table_nutriction(infor_nutri_alimento* saida, select_alimento* sa);
 
 
-/***********************************Gerar alimentos na tabela nutricional******************************************/
+/****************************************************************************************************/
+/***********************************GERA TABELA NUTRICIONAL******************************************/
+/***********************************"Tabela_Nutricional.txt"*****************************************/
+/****************************************************************************************************/
+
 //função recebe uma lista de alimentos
 void recebe_alimentos(recebeAlimento a[]);
 //função que carrega a lista de alimentos no arquivo
@@ -58,16 +69,17 @@ void grava_alimentos(recebeAlimento *a);
 
 
 
-/***********************************Gerar Menu de alimentos******************************************/
+/****************************************************************************************************/
+/***********************************GERA MENU DE ALIMENTOS ******************************************/
+/****************************************"menu.txt"**************************************************/
+/****************************************************************************************************/
+
 //função recebe uma lista de alimentos para o menu
 void menu_recebe_alimentos(menu m[]);
 //função que carrega os alimentos no arquivo
 void menu_grava_alimentos(menu *m);
 //visualiza o arquivo 
 
-/***********************************visualiza arquivos gravados******************************************/
-
-void visualiza_aquivo(char *tabela);
 
 
 #endif

@@ -19,7 +19,7 @@
 
 
 /*************************************************macros_por_peso*****************************************************
-a Função  preenche os macros nutrientes para um usuário com base no peso e na intensidade da atividade física
+A função  preenche os macros nutrientes para um usuário com base no peso e na intensidade da atividade física
 Parâmetros:
   - user *u: aponta para struct com as informações do peso
   - ativ_fisica *at: aponta para a struct com a informação da intensidade da atividade física (nível 0 a 4)
@@ -105,7 +105,16 @@ int macros_por_peso(user *u, ativ_fisica *at, MacrosNutr *saida){
     return 0;
 }
 
-/***********************************Busca e retorna o alimento e seus macronutrientes******************************************/
+/*************************************************tabela_nutriction*****************************************************
+A Função busca no arquivo "Tabela_nutricional.txt" os macros nutrientes dos alimentos selecionados na função select_menu
+e grava na struct infor_nutri_alimento
+Parâmetros:
+  - infor_nutri_alimento* saida: aponta para struct onde os dados lidos serão armazenados
+  - select_alimento* sa: aponta para a struct com os nomes dos alimentos que serão buscados no arquivo
+Retorno:
+  - 1 se os dados forem encontrados e preenchidos corretamente
+  - 0 se houver erro (falha ao abrir o arquivo)
+   *********************************************************************************************************************/
 
 
 int table_nutriction(infor_nutri_alimento* saida, select_alimento* sa) {
@@ -184,9 +193,18 @@ printf("Tamanhos: %zu vs %zu\n", strlen(nomeAlimento), strlen(sa[j].alimentos_es
     }
     return 1;
 }
-/***********************************Gerar tabela nutricional******************************************/
+/****************************************************************************************************/
+/***********************************GERA TABELA NUTRICIONAL******************************************/
+/***********************************"Tabela_Nutricional.txt"*****************************************/
+/****************************************************************************************************/
 
-//passa  o alimentos e seus macronutrientes para a struct alimento
+/*************************************************recebe_alimentos*********************************************************
+* A Função guarda nome de alimentos e seus marcos na struct recebe alimento para depois gerar um arquivo com os alimetos. *
+* Parâmetros:                                                                                                             *
+*  - recebeAlimento a[]: aponta para struct onde os dados serão armazenados                                               *
+* Retorno:                                                                                                                *
+*  - void                                                                                                                 *
+***************************************************************************************************************************/
 void recebe_alimentos(recebeAlimento a[]) {
     int limp;
 
@@ -213,6 +231,14 @@ void recebe_alimentos(recebeAlimento a[]) {
     }
 }
 
+/***************************grava_alimentos**********************************************
+* A Função grava o nome dos alimentos e seus marcos no arquivo "Tabela_Nutricional.txt". *
+* Parâmetros:                                                                            *
+*  - recebeAlimento a[]: aponta para struct onde os dados estão armazenados              *
+* Retorno:                                                                               *
+*  - void                                                                                *
+******************************************************************************************/
+
 void grava_alimentos(recebeAlimento a[]){
 FILE *f = fopen("Tabela_Nutricional.txt", "w");
     if(f == NULL){
@@ -237,8 +263,18 @@ printf("carboidrato: %2.f\n", a->carboidrato);
 printf("gordura: %2.f\n\n", a->gordura);
 
 }
+/****************************************************************************************************/
+/***********************************GERA MENU DE ALIMENTOS ******************************************/
+/****************************************"menu.txt"**************************************************/
+/****************************************************************************************************/
 
-/***********************************Gerar Menu de alimentos******************************************/
+/*****************************************menu_recebe_alimentos*********************************************************
+* A Função guarda nome de alimentos e seus marcos na struct menu para depois gerar um arquivo com um menu de alimetos. *
+* Parâmetros:                                                                                                          *
+*  - menu m[]: aponta para struct onde os dados serão armazenados                                                      *
+* Retorno:                                                                                                             *
+*  - void                                                                                                              *
+************************************************************************************************************************/
 void menu_recebe_alimentos(menu m[]) {
 
  printf("\n******************************Inicia processo de alimentacao do Menu*********************************\n");
@@ -254,7 +290,13 @@ printf("\n");
         ler_string(m[i].menu_carb, TAM_NOME, "Carboidratos: "); 
     }
 }
-
+/*******************************menu_grava_alimentos******************************
+* A Função grava os nome de alimentos separados por grupos no arquivo "menu.txt" *
+* Parâmetros:                                                                    *
+*  - menu m[]: aponta para struct onde os dados estão armazenados                *
+* Retorno:                                                                       *
+*  - void                                                                        *
+**********************************************************************************/
 void menu_grava_alimentos(menu m[]){
     FILE *f = fopen("Menu.txt", "w");
     if (f == NULL) {
@@ -282,25 +324,4 @@ void menu_grava_alimentos(menu m[]){
     printf("Arquivo criado com sucesso!\n\n");  
 }
 
-
-/***********************************visualiza arquivos gravados******************************************/
-
-void visualiza_aquivo(char *tabela){
-
-    FILE *f;
-    char linha[TAM_LINHA];
-
-    f = fopen(tabela, "r");
-    if (f == NULL) {
-        perror("Erro ao abrir o arquivo");
-        return;
-    }
-
-    // Lê e imprime linha por linha, exatamente como está no arquivo
-    while (fgets(linha, sizeof(linha), f) != NULL) {
-        printf("%s", linha); // Imprime a linha como está, incluindo a quebra de linha
-    }
-
-    fclose(f);
-}
 

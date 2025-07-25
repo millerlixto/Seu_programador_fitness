@@ -8,10 +8,17 @@
 
 #define TAM_NOME 100
 
-
+/**********************************************/
 /**************dados do usuário****************/
+/**********************************************/
 
-//função pede o nome do usuário
+/*******************pergunta_nome***********************
+* A Função  preenche a struct user com o nome do usuário *
+* Parâmetros:                                            *
+*  - user *u: aponta para struct que vai receber o nome  *
+* Retorno:                                               *
+*  - void                                                *
+**********************************************************/
 void perguntar_nome(user *u) {
 
     do {
@@ -32,7 +39,13 @@ void perguntar_nome(user *u) {
 
 }
 
-//função pede o sexo do usuário
+/*******************perguntar_sexo***********************
+* A Função  preenche a struct user com o nome do usuário *
+* Parâmetros:                                            *
+*  - user *u: aponta para struct que vai receber o sexo  *
+* Retorno:                                               *
+*  - void                                                *
+**********************************************************/
 void perguntar_sexo(user *u) {
 
     do {
@@ -46,7 +59,13 @@ void perguntar_sexo(user *u) {
 
 }
 
-//função pede a idade do usuário
+/*******************perguntar_idade***********************
+* A Função  preenche a struct user com o nome do usuário *
+* Parâmetros:                                            *
+*  - user *u: aponta para struct que vai receber o idade *
+* Retorno:                                               *
+*  - void                                                *
+**********************************************************/
 void perguntar_idade(user *u) {
 
     int return_scanf;
@@ -60,13 +79,13 @@ void perguntar_idade(user *u) {
 
             printf("\n\nErro: idade invalida!");
 
-            // Limpa buffer 
+           
             limpar_buffer();
 
         } else if (u->idade <= 0 || u->idade > 130) {
             printf("\n\nErro: idade invalida!");
 
-            // Limpa buffer 
+           
             limpar_buffer();
 
         } else {
@@ -81,7 +100,13 @@ void perguntar_idade(user *u) {
     } while (!valida_idade);
 }
 
-//função pede a altura do usuário
+/*******************perguntar_altura***********************
+* A Função  preenche a struct user com o nome do usuário *
+* Parâmetros:                                            *
+*  - user *u: aponta para struct que vai receber o altura  *
+* Retorno:                                               *
+*  - void                                                *
+**********************************************************/
 void perguntar_altura(user *u) {
     int return_scanf;
     int valida_altura = 0;
@@ -90,7 +115,7 @@ void perguntar_altura(user *u) {
         printf("Qual sua altura (cm)?: ");
         return_scanf = scanf(" %d", &u->altura);
 
-        if (return_scanf != 1) {
+        if (return_scanf != 1) {//verifica se a entrada é numérica
             printf("\n\nErro: Altura invalida!");
 
            limpar_buffer();
@@ -110,7 +135,13 @@ void perguntar_altura(user *u) {
     } while (!valida_altura);
 }
 
-//função pede o peso do usuário
+/*******************perguntar_peso***********************
+* A Função  preenche a struct user com o nome do usuário *
+* Parâmetros:                                            *
+*  - user *u: aponta para struct que vai receber o peso  *
+* Retorno:                                               *
+*  - void                                                *
+**********************************************************/
 void perguntar_peso(user *u) {
     int return_scanf;
     int valida_peso = 0;
@@ -120,13 +151,13 @@ void perguntar_peso(user *u) {
         return_scanf = scanf(" %f", &u->peso);
         limpar_buffer();
 
-        if (return_scanf != 1) {
+        if (return_scanf != 1) {///verifica se a entrada é numérica
             printf("\n\nErro: Peso invalido! Digite apenas numeros.");
             printf("\nPressione 'ENTER' e entre novamente com o peso.\n");
 
          limpar_buffer();
 
-        } else if (u->peso <= 0) {
+        } else if (u->peso <= 0) {//tratamento de entrada de dados
             printf("\n\nErro: peso invalido. Informe um valor positivo.");
             printf("\nPressione 'ENTER' e entre novamente com o peso.\n");
 
@@ -140,13 +171,20 @@ void perguntar_peso(user *u) {
 
     } while (!valida_peso);
 }
-
+/***************************************/
 /**************impressão****************/
+/***************************************/
 
-//função imprime os dados do usuário
+/*******************imprimir_dados**************************
+* A Função imprime os dados da struct user                 *
+* Parâmetros:                                              *
+*  - user *u: aponta para struct que vai imprimir os dados *
+* Retorno:                                                 *
+*  - void                                                  *
+************************************************************/
 void imprimir_dados(const user *u) {
     printf("Nome: %s\n", u->nome);
-    // printf("sexo: %c\n", u->sexo);
+// printf("sexo: %c\n", u->sexo);
     printf("Idade: %d anos\n", u->idade);
     printf("Altura: %d cm\n", u->altura);
     printf("Peso: %.2f kg\n", u->peso);

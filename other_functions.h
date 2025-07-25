@@ -1,6 +1,9 @@
 #ifndef OTHER_H
 #define OTHER_H
 
+/***********************************************/
+/*******************ESTRUTURAS******************/
+/***********************************************/
 
 //guarda o nível de atividade do usuário: sedentário, levemente ativo, moderadamete ativo, muito ativo, extremamente ativo 
 typedef struct{
@@ -11,7 +14,9 @@ typedef struct {
     char* alimentos_escolhidos; 
 } select_alimento;
 
-/**************funções genéricas****************/
+/***********************************************/
+/**************FUNÇÕES GENÉRICAS****************/
+/***********************************************/
 
 //recebe o peso da struct user e aproxima segundo tabela, que contem intervalos de 5kg
 int aproxima_peso(user* u);
@@ -28,11 +33,17 @@ void ler_string(char *buffer, int tamanho, const char *mensagem);
 //limpa o buffer
 void limpar_buffer();
 
-/**************conversões****************/
+/***********************************************/
+/******************CONVERSÕES*******************/
+/***********************************************/
+
 //Converte cm para m
 double convert_Cm_Para_Metro(user *u);
 
-/**************calculos****************/
+/***********************************************/
+/******************CÁLCULOS*********************/
+/***********************************************/
+
 //função calcula TMB
 double calc_TMB(user *u);
 //Calculando o Gasto Calórico Total, o GCT inclui a TMB, 
