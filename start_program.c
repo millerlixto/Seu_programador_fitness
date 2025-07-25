@@ -56,7 +56,7 @@ void iniciar_processo() {
            //Função recebe peso e nível de atividade, retorna 1 se achou, 0 caso contrário. Guarda na struct "MacrusNutr"
           // o peso e os macros nutrientes relacionado ao peso e nível de atividade
           if (!macros_por_peso(&u, &at, &saida_MacrosNutr))printf("Nao foi possivel carregar os dados.\n\n");
-         select_menu(sa);
+         select_Menu(sa);
          table_nutriction(&saida_inf_nutri_alimento,sa);
          system("pause");
          

@@ -19,14 +19,14 @@
 
 
 /*************************************************macros_por_peso*****************************************************
-a Função  preenche as macros nutrientes para um usuário com base no peso e na intensidade da atividade física
+a Função  preenche os macros nutrientes para um usuário com base no peso e na intensidade da atividade física
 Parâmetros:
-   - user *u: aponta para struct com as informações do peso
-   - ativ_fisica *at: aponta para a struct com a informação da intensidade da atividade física (nível 0 a 4)
-   - MacrosNutr *saida: aponta para a struct onde os dados lidos serão armazenados
- Retorno:
-   - 1 se os dados forem encontrados e preenchidos corretamente
-   - 0 se houver erro (peso não encontrado ou falha ao abrir o arquivo)
+  - user *u: aponta para struct com as informações do peso
+  - ativ_fisica *at: aponta para a struct com a informação da intensidade da atividade física (nível 0 a 4)
+  - MacrosNutr *saida: aponta para a struct onde os dados lidos serão armazenados
+Retorno:
+  - 1 se os dados forem encontrados e preenchidos corretamente
+  - 0 se houver erro (peso não encontrado ou falha ao abrir o arquivo)
    *********************************************************************************************************************/
 
 int macros_por_peso(user *u, ativ_fisica *at, MacrosNutr *saida){
@@ -123,7 +123,7 @@ int table_nutriction(infor_nutri_alimento* saida, select_alimento* sa) {
         int encontrado = 0;
        
         // Limpa espaços extras do nome escolhido pelo usuário
-        remove_espacos(sa[j].alimentos_escolhidos);
+        remove_espacos_str(sa[j].alimentos_escolhidos);
 
         while (fgets(linha, sizeof(linha), f)) {
             if (strchr(linha, ',') == NULL) continue;
@@ -131,7 +131,7 @@ int table_nutriction(infor_nutri_alimento* saida, select_alimento* sa) {
             nomeAlimento = strtok(linha, ",");
             if (!nomeAlimento) continue;
             // Limpa espaços extras do nome escolhido pelo usuário
-               remove_espacos(nomeAlimento);
+               remove_espacos_str(nomeAlimento);
 
             while (*nomeAlimento == ' ') nomeAlimento++;
             nomeAlimento[strcspn(nomeAlimento, "\n")] = '\0';

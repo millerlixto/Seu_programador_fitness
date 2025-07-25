@@ -2,19 +2,21 @@
 #define OTHER_H
 
 
-//quarda o nível de atividade do usuário: sedentário, levemente ativo, moderadamete ativo, muito ativo, extremamente ativo 
+//guarda o nível de atividade do usuário: sedentário, levemente ativo, moderadamete ativo, muito ativo, extremamente ativo 
 typedef struct{
  int intensidade;                
 } ativ_fisica; 
-//quarda o alimento escolhido pelo usuário para montar um plano alimentar
+//guarda o alimento escolhido pelo usuário para montar um plano alimentar
 typedef struct {
     char* alimentos_escolhidos; 
 } select_alimento;
 
 /**************funções genéricas****************/
 
+//recebe o peso da struct user e aproxima segundo tabela, que contem intervalos de 5kg
+int aproxima_peso(user* u);
 //remover espaços no início e no fim das strings
-void remove_espacos(char *str);
+void remove_espacos_str(char *str);
 //seleciona o fator de ativiadade
 void definir_fator_atividade_ativo(ativ_fisica *at);
 //seleciona o fator de atividade para usuários menos ativos
@@ -39,15 +41,11 @@ double calc_GET(ativ_fisica *at, user *u);
 //calculo do IMC ínice de maça corporal
 void calc_IMC(user *u);
 //Seleção de alimento no menu
-void select_menu(select_alimento* sa);
+void select_Menu(select_alimento* sa);
 //calculo dos macros
 void calc_Macros(user *u,ativ_fisica* at, select_alimento* sa);
-//recebe o peso da struct user e aproxima segundo tabela, que contem intervalos de 5kg
-int aproxima_peso(user* u);
 
-/**************impressão****************/
-//função de impressão de dados das funções de da biblioteca other_functions
-void imprimir_Dados_Other_Functions(ativ_fisica *at, user *u);
+
 
 
 

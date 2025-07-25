@@ -1,10 +1,10 @@
 #include <stdio.h>
-#include<ctype.h>
-#include<string.h>
-#include<tgmath.h>
-#include<stdlib.h>
+#include <ctype.h>
+#include <string.h>
+#include <tgmath.h>
+#include <stdlib.h>
 #include "user.h"
-#include"other_functions.h"
+#include "other_functions.h"
 
 
 #define TAM_NOME 50
@@ -18,19 +18,76 @@
 #define PESOS 26
 #define INTERVALO_PESO 5
 
-/**************funções genéricas****************/
+/***********************************************/
+/**************FUNÇÕES GENÉRICAS****************/
+/***********************************************/
 
-// Função para remover espaços em branco no início e fim de uma string
-void remove_espacos(char *str) {
-    char *inicio = str; // Ponteiro percorrer do início da string
-    char *fim;          // Ponteiro que encontrará o final da string
+int aproxima_peso(user* u) {
 
-    // *******************************
-    // Remove espaços do início
-    // *******************************
+ // Verifica se o peso do usuário foi atribuído corretamente
+    if (u->peso <= 0) {
+        printf("Erro: peso do usuario nao foi definido. ");
+       exit(1);
+    }
+     /****************************************
+     * Alocando memória para vetor de pesos *
+     ****************************************/
+    int* peso = (int*)malloc(PESOS * sizeof(int));
+    if (peso == NULL) {
+        printf("Erro: memória não alocada\n");
+        exit(1);
+    }
+     /*****************************************
+     * Preenchendo o vetor com INTERVALO_PESO *
+     ******************************************/
 
-    // Ponteiro 'inicio' avança até encontrar o primeiro caractere útil.
-    // ignora espaço, tabulação e quebra de linha
+    for (int i = 0; i < PESOS; i++) {
+        peso[i] = (i + 1) * INTERVALO_PESO;
+    }
+     /********************************
+     * Convertendo o peso do usuário *
+     *********************************/
+    // Converte o peso do usuário (float) para int 
+    int peso_convertido = (int)(u->peso + 0.5);  
+
+    /***********************************
+     * Encontrando o peso mais próximo *
+     ***********************************/
+     
+    int indice_mais_proximo = 0;
+    int menor_diferenca = abs(peso[0] - peso_convertido);  // diferença inicial
+
+    for (int i = 1; i < PESOS; i++) {
+        int diferenca = abs(peso[i] - peso_convertido);
+        if (diferenca < menor_diferenca) {
+            menor_diferenca = diferenca;
+            indice_mais_proximo = i;
+        }
+    }
+
+   int peso_aproximado = peso[indice_mais_proximo];  
+    free(peso);  // libera a memória alocada
+
+    return peso_aproximado;  
+}
+
+/*************************remove_espacos_str***********************
+* A função remove espaços em branco no início e fim de uma string *
+* Parâmetros:                                                     *
+*  - srt: string destino, a qual se pretende remover os espaços   *
+* Retorno:                                                        *
+*  - string sem espaços a esquerda e a direita                    *
+*******************************************************************/
+
+void remove_espacos_str(char *str) {
+    char *inicio = str; // percorrer do início da string
+    char *fim;          // encontrará o final da string
+
+    /******************************
+    * Removendo espaços do início *
+    *******************************/
+
+    // 'inicio' avança até encontrar o primeiro caractere útil.
     while (*inicio == ' ' || *inicio == '\t' || *inicio == '\n') {
         inicio++;
     }
@@ -38,26 +95,26 @@ void remove_espacos(char *str) {
     // Sobrescrevendo os espaços iniciais.
     if (str != inicio) {
 
-        //**************************************************memmove********************************************
-       // strlen(inicio) calcula o tamanho dos caracteres úteis (sem contar espaços no início).
-       //+ 1 é adicionado para incluir o caractere, que indica o fim da string.
-      // A função 'memmove(destino, origem, tamanho)' move a parte útil da string para o início. Removendo os espaços iniciais.
-     //********************************************************************************************************
+    /**************************************************memmove*****************************************************************
+    * strlen(inicio) calcula o tamanho dos caracteres úteis (sem contar espaços no início).                                   *
+    * + 1 é adicionado para incluir o caractere, que indica o fim da string.                                                  *
+    *  A função 'memmove(destino, origem, tamanho)' move a parte útil da string para o início. Removendo os espaços iniciais. *
+    ***************************************************************************************************************************/
         memmove(str, inicio, strlen(inicio) + 1); 
     }
 
-    // *******************************
-    //  Remove espaços do final
-    // *******************************
+    /**************************
+    * Remove espaços do final *
+    ***************************/
 
-    // Ponteiro 'fim' aponta para o último caractere da string 
+    // 'fim' aponta para o último caractere da string 
     // strlen(inicio) calcula o tamanho dos caracteres úteis (sem contar espaços no início).
     //str + strlen(str) joga o ponteiro para o caracter nulo '\0' (fim de estring) 
     //por isso -1 ajusta o ponteiro para voltar ao ultimo caracter útil
     fim = str + strlen(str) - 1;
 
     
-    // Se encontrar espaço, tabulação ou quebra de linha,
+    
     // substitui por '\0' e anda para trás, até um caracter útil.
     while (fim >= str && (*fim == ' ' || *fim == '\t' || *fim == '\n')) {
         *fim = '\0'; // Remove o caractere colocando fim de string
@@ -65,13 +122,24 @@ void remove_espacos(char *str) {
     }
 }
 
-//recede a intesidade da atividade física
+/***************************************definir_fator_atividade_ativo**************************************
+* A função guarda o fator de atividade física(usuários ativos) em  struct ativ_fisica                     *
+* Parâmetros:                                                                                             *
+*  - ativ_fisica *at: aponta para a struct que vai copiar a intensidade da atividade física (nível 0 a 4) *
+* Retorno:                                                                                                *
+*  - void                                                                                                 *
+***********************************************************************************************************/
 
 void definir_fator_atividade_ativo(ativ_fisica  *at){
 
-// verificação,  1<= inteiro <=5
-int return_scanf;
+
+int return_scanf;// 1<= inteiro <=5
 int valida = 0;
+
+/*****************************************
+* Selecionando nível de atividade física *
+******************************************/
+
 do{
 printf("\nDiga qual a intensidade de 0 a 4, sendo:\n\n");
 printf("- 0 para sedentario(trabalha de escritorio, passa maior parte do dia sentado.: \n \n"); 
@@ -80,19 +148,19 @@ printf("- 2 para moderadamente ativo(Corrida leve, natacao, ciclismo, musculacao
 printf("- 3 para muito ativo(Maratonistas, atletas que treinam quase todos os dias, esportes coletivos de alta intensidade, musculacao pesada frequente.)\n\n");
 printf("- 4 para extremamente ativo(Atletas de alta performance, trabalhos com grande esforco fisico continuo (ex: construcao civil).): \n");
 
-//tratamento de entrada com scanf
+/**********************
+* Verificando entrada *
+***********************/
 //O scanf retorna o numero de leituras com sucesso 
-//0 se a conversão falou e EOF(-1), se chegou ao fim do arquivo
-// ou houve erro de leitura
+//0 se a conversão falhou e EOF(-1), se chegou ao fim do arquivo
+//ou houve erro de leitura
 return_scanf = scanf(" %d", &at->intensidade);
 limpar_buffer();
-// se o scanf receber uma quantidade diferende de argumentos que o esperado 
-//pela entrado do usuários, as mensagens de erro são enviadas.
-if(return_scanf != 1){//um argumento esperado, retorno do scanf 1.
 
-printf("Erro: duracao invalida. Apenas numeros inteiros.\n");
+if(return_scanf != 1){//um argumento esperado, retorno do scanf 1.
+printf("Erro: intensidade invalida. Apenas numeros inteiros.\n");
 limpar_buffer();
-}else if(at->intensidade < 0 || at->intensidade >4){
+}else if(at->intensidade < 0 || at->intensidade >4){//verifica entrada no intervalo de 0 à 4
 printf("Erro: intensidade invalida. Fora do intervalo (0 a 4).\n");
 limpar_buffer();
 }else{
@@ -100,31 +168,41 @@ valida = 1;
 limpar_buffer();
 }
 }while(!valida);
-//*****************impressão de validação********************
-// printf("Intensidade escolhida: %d\n", at->intensidade);
+
+//*****************impressão de validação******************
+// printf("Intensidade escolhida: %d\n", at->intensidade) 
+
 }
 
-//recede a intesidade da atividade física de usuários menos ativo
+/*************************************definir_fator_atividade_MenosAtivo***********************************
+* A função guarda o fator de atividade física(usuários menos ativos) em  struct ativ_fisica               *
+* Parâmetros:                                                                                             *
+*  - ativ_fisica *at: aponta para a struct que vai copiar a intensidade da atividade física (nível 1 à 2) *
+* Retorno:                                                                                                *
+*  - void                                                                                                 *
+***********************************************************************************************************/
+
 void definir_fator_atividade_MenosAtivo(ativ_fisica *at){
-// verificação,  0 ou 1.
+
 int return_scanf;// tratamento de entrada
 int valida = 0;
+/*****************************************
+* Selecionando nível de atividade física *
+******************************************/
 do{
 printf("\nSelecione a opcao que mais combina com seu estilo de vida: 0 ou 1, sendo:\n\n");
 printf("-0 para sedentario(trabalha de escritorio, passa maior parte do dia sentado. \n\n"); 
 printf("-1 para levemente ativo(Caminhadas curtas, tarefas domesticas leves, subir escadas ocasionalmente.)\n");
 
-//tratamento de entrada com scanf
+
 //O scanf retorna o numero de leituras com sucesso 
 //0 se a conversão falou e EOF(-1), se chegou ao fim do arquivo
-// ou houve erro de leitura
+//ou houve erro de leitura
 return_scanf = scanf(" %d", &at->intensidade);
 limpar_buffer();
-// se o scanf receber uma quantidade diferende de argumentos que o esperado 
-//pela entrado do usuários, as mensagens de erro são enviadas.
-if(return_scanf != 1){//um argumento esperado, retorno so scanf 1.
 
-printf("Erro: duracao invalida. Apenas numeros inteiros.\n");
+if(return_scanf != 1){//um argumento esperado, retorno so scanf 1.
+printf("Erro: intensidade invalida. Apenas numeros inteiros.\n");
 limpar_buffer();
 }else if(at->intensidade < 0 || at->intensidade > 1){
 printf("Erro: intensidade invalida. Fora do intervalo (0 ou 1).\n");
@@ -136,7 +214,14 @@ limpar_buffer();
 }while(!valida);
 }
 
-//MET(fator de ativiadade física)
+/*************************************************valor_MET_User********************************************************
+* A função recebe a intensidade da atividade física e seleciona do MET(fator de ativiadade física)                     *
+* Parâmetros:                                                                                                          *
+*  - ativ_fisica *at: aponta para a struct com a informação da intensidade da atividade física, (nível 0 a 4 ou 1 à 2) *
+* Retorno:                                                                                                             *
+*  - o MET(float)                                                                                                      *
+************************************************************************************************************************/
+
 float valor_MET_User(ativ_fisica *at) {
     float met = 0.0;
     switch (at->intensidade) {
@@ -164,32 +249,66 @@ float valor_MET_User(ativ_fisica *at) {
     return met;
 }
 
-//ler string do teclado
+/**********************************************ler_string**************************************************************
+* A função mostra uma mensagem personalizada ao usuário, lê uma string do teclado (com fgets) e remove o caractere de *
+* nova linha \n que fgets coloca no final da string (se presente).                                                    *
+* Parâmetros:                                                                                                         *
+*  -char *buffer: local onde a string digitada será armazenada.                                                       *
+*  -int tamanho: número máximo de caracteres a serem lidos (incluindo o de fim de string).                            *
+* -const char *mensagem: texto que vai ser mostrado antes da leitura.                                                 *
+* Retorno:                                                                                                            *
+*  -void                                                                                                              *
+***********************************************************************************************************************/
+
 void ler_string(char *buffer, int tamanho, const char *mensagem) {
-    printf("%s", mensagem);
+    printf("%s", mensagem);//mensagem que vai ser passada na leitura
     if (fgets(buffer, tamanho, stdin)) {
-        buffer[strcspn(buffer, "\n")] = '\0';
+        buffer[strcspn(buffer, "\n")] = '\0';//substiue o "\n"por '\0'
     }
 }
 
+/************************************limpa Buffer**********************************************
+* A função lê um caractere por vez e descarta, continua até encontrar um fim da linha ou EOF. *
+* Parâmetros:                                                                                 *
+*  -Sem argumento.                                                                            *
+* Retorno:                                                                                    *
+*  - void.                                                                                    *
+***********************************************************************************************/
 
-//lipa Buffer
 void limpar_buffer() {
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
 }
 
-/**************conversões****************/
+/***********************************************/
+/******************CONVERSÕES*******************/
+/***********************************************/
 
-// Converter centímetros para metros
+/********************convert_Cm_Para_Metro***********************
+*A função converter altura que chega em centímetros para metros *
+*Parâmetros:                                                    *
+*  -user *u aponta para struct com as informações da altura     *
+*Retorno:                                                       *
+*  - Altura em metros (double).                                 *
+*****************************************************************/
+
 double convert_Cm_Para_Metro(user *u) {
     double Altura_M = u->altura/100;
   return Altura_M ;
 }
 
-/**************calculos****************/
+/***********************************************/
+/******************CÁLCULOS*********************/
+/***********************************************/
 
-//calcula o taxa de metabolismo basal, usando fator de atividades
+/*****************************calc_TMB******************************************
+*A função calcula o taxa de metabolismo basal                                  *
+*Parâmetros:                                                                   *
+*  -user *u aponta para struct com as informações da altura, peso, idade, sexo *
+*Retorno:                                                                      *
+*  - TMB (double).                                                             *
+********************************************************************************/
+
 double calc_TMB(user *u){ 
 
       double tmb = 0;
@@ -208,7 +327,9 @@ double calc_TMB(user *u){
    //conversão para minusculo
    sexo = tolower(sexo);
    
-   
+   /**********************************
+    * calculo do TMB para sexo M e F *
+    **********************************/
    if(sexo == 'm'){
     //TMB_masculino = 88,362+(13,397×peso)+(4,799×altura)−(5,677×idade)
 tmb =  HarrisBenedict_m + (  coef_peso_m * u->peso ) + ( coef_altura_m * u->altura ) - ( coef_idade_m * u->idade);
@@ -219,13 +340,29 @@ tmb =  HarrisBenedict_f + ( coef_peso_f * u->peso ) + ( coef_altura_f * u->altur
    return tmb;
 }
 
-//calculo do energetico  total
+/*************************************calc_GET**********************************************
+* A função calcula o gasto energetico  total                                               *
+* Parâmetros:                                                                              *
+*  - user *u aponta para struct com as informações do usuário                              *
+* - ativ_fisica *aponta para a struct com as informações dos fatores de atividades físicas *
+* Retorno:                                                                                 *
+*  - GET(met * tmb)(double).                                                               *
+********************************************************************************************/
+
 double calc_GET(ativ_fisica *at, user *u) {
     float met = valor_MET_User(at);
     double tmb = calc_TMB(u);
     return met * tmb;
 }
-//calcula o indice de maça corporal
+
+/**************************calc_IMC****************************
+*A função calcula o calcula o indice de maça corporal         *
+*Parâmetros:                                                  *
+*  - user *u aponta para struct com as informações do usuário *
+*Retorno:                                                     *
+*  - void - imprime o IMC do usuário                          *
+***************************************************************/
+
 void calc_IMC(user *u){
 double altura = convert_Cm_Para_Metro(u);
 double imc = u->peso/pow(altura,2.0);
@@ -243,10 +380,15 @@ if (imc < 18.5) {
 return;
 }
 
-/**************seleção de alimento no menu****************/
+/**********************************************select_Menu**********************************************************
+*A função abre o arquivo "Menu.txt" ler e passar uma serie de alimentos para seleção do usiário no plano alimentar.*
+*Parâmetros:                                                                                                       *
+*  - select_alimento* sa aponta para struct que vai guardar os alimentos selecionados pelo usuário.                *
+*Retorno:                                                                                                          *
+*  - void.                                                                                                         *
+********************************************************************************************************************/
 
-void select_menu(select_alimento* sa) {
-
+void select_Menu(select_alimento* sa) {
 
     FILE *f = fopen("Menu.txt", "r");
     if (f == NULL) {
@@ -254,12 +396,12 @@ void select_menu(select_alimento* sa) {
         return;
     }
 
-    char linha[TAM_LINHA];  // Buffer para leitura de linhas
+    char linha[TAM_LINHA];  // leitura de linhas
     char* token;
 
     // Matriz com nomes dos alimentos lidos do arquivo
-    char alimentos[GRUPO][QNT_ALIMENTO][NOME] = {{{0}}};  // Limpa todos os dados
-    int total_grupos = 0;  // Contador de grupos
+    char alimentos[GRUPO][QNT_ALIMENTO][NOME] = {{{0}}};  
+    int total_grupos = 0;  // Contador 
 
     /**************************************
      * Leitura e separação dos alimentos *
@@ -267,21 +409,21 @@ void select_menu(select_alimento* sa) {
     while (fgets(linha, sizeof(linha), f) != NULL && total_grupos < GRUPO) {
         linha[strcspn(linha, "\n")] = '\0';  // Remove \n do final da linha
 
-        int alimento_idx = 0;
+        int alimentoLido = 0;
         token = strtok(linha, ",");
 
         // Separa alimentos da linha atual
-        while (token != NULL && alimento_idx < QNT_ALIMENTO) {
-            strncpy(alimentos[total_grupos][alimento_idx], token, NOME - 1);
-            alimentos[total_grupos][alimento_idx][NOME - 1] = '\0';  // Garante final da string
-            alimento_idx++;
+        while (token != NULL && alimentoLido < QNT_ALIMENTO) {
+            strncpy(alimentos[total_grupos][alimentoLido], token, NOME - 1);
+            alimentos[total_grupos][alimentoLido][NOME - 1] = '\0';  // Garante final da string
+            alimentoLido++;
             token = strtok(NULL, ",");  // Próximo token
         }
 
         total_grupos++;
     }
 
-    fclose(f);  // Fecha o arquivo
+    fclose(f);  
 
     /**************************************
      * Escolha dos alimentos pelo usuário *
@@ -299,7 +441,7 @@ void select_menu(select_alimento* sa) {
         do {
             printf("Sua escolha: ");
             scanf(" %d", &escolha);
-            // Limpa buffer 
+            
             limpar_buffer();
 
             // Verifica se o número é válido
@@ -308,36 +450,34 @@ void select_menu(select_alimento* sa) {
             }
         } while (escolha < 1 || escolha >= QNT_ALIMENTO || alimentos[grupo][escolha][0] == '\0');
 
-        /*************************************
-         * Copiando o alimento para a struct *
-         *************************************/
+        /***********************
+         * Copia para a struct *
+         ***********************/
 
         // Libera memória anterior, se houver
         if (sa[grupo].alimentos_escolhidos != NULL) {
             free(sa[grupo].alimentos_escolhidos);
         }
 
-        // Aloca memória exata para o alimento escolhido (+1 para '\0')
         sa[grupo].alimentos_escolhidos = malloc(strlen(alimentos[grupo][escolha]) + 1);
 
         // Verifica se a alocação funcionou
         if (sa[grupo].alimentos_escolhidos == NULL) {
             printf("Erro de memória.\n");
-            exit(1);  // ou `return` dependendo do seu controle de erros
+            exit(1);  
         }
 
         // Copia a string escolhida
         strcpy(sa[grupo].alimentos_escolhidos, alimentos[grupo][escolha]);
 
 
-        // Pausa e limpa a tela (opcional, Windows)
         system("pause");
         system("cls");
     }
 
-    /**************************************
-     * Mostra escolhas feitas pelo usuário
-     **************************************/
+    /****************************************
+     * Imprime escolhas feitas pelo usuário *
+     ****************************************/
     printf("\n************** Sugestao de Plano Alimentar ***************\n\n");
     printf("\nAlimentos escolhidos:\n\n");
     for (int i = 0; i < total_grupos; i++) {
@@ -349,59 +489,17 @@ void calc_Macros(user *u, ativ_fisica* at, select_alimento* sa){
 }
 
 
-/**************peso mais próximo****************/
-//recebe o peso da struct user e aproxima segundo tabela, que contem intervalos de 5kg
-int aproxima_peso(user* u) {
-
- // Verifica se o peso do usuário foi atribuído corretamente
-    if (u->peso <= 0) {
-        printf("Erro: peso do usuario nao foi definido. ");
-       return -1;
-
-    }
-
-    // Alocando memória para vetor de pesos
-    int* peso = (int*)malloc(PESOS * sizeof(int));
-    if (peso == NULL) {
-        printf("Erro: memória não alocada\n");
-        return -1;
-    }
-
-    // Preenchendo o vetor com múltiplos de INTERVALO_PESO (ex: 5, 10, 15...)
-    for (int i = 0; i < PESOS; i++) {
-        peso[i] = (i + 1) * INTERVALO_PESO;
-    }
-
-    // Converte o peso do usuário (float) para int com arredondamento
-    int peso_convertido = (int)(u->peso + 0.5);  // Arredonda para o inteiro mais próximo
-
-    // Encontrando o peso mais próximo
-    int indice_mais_proximo = 0;
-    int menor_diferenca = abs(peso[0] - peso_convertido);  // diferença inicial
-
-    for (int i = 1; i < PESOS; i++) {
-        int diferenca = abs(peso[i] - peso_convertido);
-        if (diferenca < menor_diferenca) {
-            menor_diferenca = diferenca;
-            indice_mais_proximo = i;
-        }
-    }
-
-   int peso_aproximado = peso[indice_mais_proximo];  // salvar valor antes de liberar memória
-    free(peso);  // libera a memória alocada
-
-    return peso_aproximado;  // retorna o peso mais próximo da tabela
-}
+/**********************************************aproxima_peso************************************************************
+* A função recebe o peso da struct user e aproxima segundo o arquivo macros_tabela.txt, que está em intervalos de 5kg. *
+* Parâmetros:                                                                                                          *
+*  - user *u: aponta para struct com as informações do peso do usuário                                                 *
+* Retorno:                                                                                                             *
+*  - peso aproximado (int).                                                                                            *
+************************************************************************************************************************/
 
 
-/**************impressão****************/
 
-//função imprime os dados other_functions
-void imprimir_Dados_Other_Functions(ativ_fisica *at, user *u) {
 
-    printf("Gasto calorico total (MET): %.2f\n", valor_MET_User(at));
-    printf("Taxa de Metabolismo Basal (TMB): %.2f\n", calc_TMB(u));
-    printf("Gasto Engergetico Total (GET): %.2f\n", calc_GET(at, u));
 
     
-}
+
