@@ -24,6 +24,14 @@
 
 int aproxima_peso(user* u) {
 
+/**********************************************aproxima_peso************************************************************
+* A função recebe o peso da struct user e aproxima segundo o arquivo macros_tabela.txt, que está em intervalos de 5kg. *
+* Parâmetros:                                                                                                          *
+*  - user *u: aponta para struct com as informações do peso do usuário                                                 *
+* Retorno:                                                                                                             *
+*  - peso aproximado (int).                                                                                            *
+************************************************************************************************************************/
+
  // Verifica se o peso do usuário foi atribuído corretamente
     if (u->peso <= 0) {
         printf("Erro: peso do usuario nao foi definido. ");
@@ -293,7 +301,9 @@ void limpar_buffer() {
 *****************************************************************/
 
 double convert_Cm_Para_Metro(user *u) {
-    double Altura_M = u->altura/100;
+    //printf("altura_c: %d\n", u->altura );//impressão de validação
+    double Altura_M = u->altura/100.0;
+   // printf("altura_M: %.2f\n", Altura_M); //impressão de validação
   return Altura_M ;
 }
 
@@ -301,13 +311,13 @@ double convert_Cm_Para_Metro(user *u) {
 /******************CÁLCULOS*********************/
 /***********************************************/
 
-/*****************************calc_TMB******************************************
-*A função calcula o taxa de metabolismo basal                                  *
-*Parâmetros:                                                                   *
-*  -user *u aponta para struct com as informações da altura, peso, idade, sexo *
-*Retorno:                                                                      *
-*  - TMB (double).                                                             *
-********************************************************************************/
+/*****************************calc_TMB*************************************************
+*A função cálculo da Taxa Metabólica Basal (TMB) segundo a fórmula de Harris-Benedict *
+*Parâmetros:                                                                          *
+*  -user *u aponta para struct com as informações da altura, peso, idade, sexo        *
+*Retorno:                                                                             *
+*  - TMB (double).                                                                    *
+***************************************************************************************/
 
 double calc_TMB(user *u){ 
 
@@ -341,7 +351,8 @@ tmb =  HarrisBenedict_f + ( coef_peso_f * u->peso ) + ( coef_altura_f * u->altur
 }
 
 /*************************************calc_GET**********************************************
-* A função calcula o gasto energetico  total                                               *
+* A função calcula o gasto energetico  total segundo (Food and Agriculture Organization,   * 
+* World Health Organization e United Nations University)                                     *
 * Parâmetros:                                                                              *
 *  - user *u aponta para struct com as informações do usuário                              *
 * - ativ_fisica *aponta para a struct com as informações dos fatores de atividades físicas *
@@ -356,28 +367,37 @@ double calc_GET(ativ_fisica *at, user *u) {
 }
 
 /**************************calc_IMC****************************
-*A função calcula o calcula o indice de maça corporal         *
-*Parâmetros:                                                  *
+* A função calcula IMC (Índice de Massa Corporal) criada pelo *
+* estatístico e matemático belga Adolphe Quetelet             *
+* Parâmetros:                                                 *
 *  - user *u aponta para struct com as informações do usuário *
-*Retorno:                                                     *
+* Retorno:                                                    *
 *  - void - imprime o IMC do usuário                          *
 ***************************************************************/
 
 void calc_IMC(user *u){
-double altura = convert_Cm_Para_Metro(u);
-double imc = u->peso/pow(altura,2.0);
+    double altura = convert_Cm_Para_Metro(u);
+    double imc = u->peso/(pow(altura,2.0));
 
-if (imc < 18.5) {
-    printf("IMC: Abaixo do peso ideal\n");
-} else if (imc >= 18.5 && imc <= 24.9) {
-    printf("IMC: No peso ideal\n");
-} else if (imc >= 25.0 && imc <= 29.9) {
-    printf("IMC: Acima do peso ideal\n");
-} else if (imc >= 30.0) {
-    printf("IMC: Muito acima do peso ideal\n");
-}
+    if (imc < 16.0) {//classificação segundo (OMS)
+        printf("IMC: Magreza grave\n");
+    } else if (imc >= 16.0 && imc < 17.0) {
+        printf("IMC: Magreza moderada\n");
+    } else if (imc >= 17.0 && imc < 18.5) {
+        printf("IMC: Magreza leve\n");
+    } else if (imc >= 18.5 && imc < 25.0) {
+        printf("IMC: Peso normal\n");
+    } else if (imc >= 25.0 && imc < 30.0) {
+        printf("IMC: Sobrepeso\n");
+    } else if (imc >= 30.0 && imc < 35.0) {
+        printf("IMC: Obesidade grau 1\n");
+    } else if (imc >= 35.0 && imc < 40.0) {
+        printf("IMC: Obesidade grau 2\n");
+    } else {
+        printf("IMC: Obesidade grau 3\n");
+    }
 
-return;
+    return;
 }
 
 /**********************************************select_Menu**********************************************************
@@ -489,13 +509,7 @@ void calc_Macros(user *u, ativ_fisica* at, select_alimento* sa){
 }
 
 
-/**********************************************aproxima_peso************************************************************
-* A função recebe o peso da struct user e aproxima segundo o arquivo macros_tabela.txt, que está em intervalos de 5kg. *
-* Parâmetros:                                                                                                          *
-*  - user *u: aponta para struct com as informações do peso do usuário                                                 *
-* Retorno:                                                                                                             *
-*  - peso aproximado (int).                                                                                            *
-************************************************************************************************************************/
+
 
 
 

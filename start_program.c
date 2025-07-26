@@ -19,7 +19,7 @@ char resposta;
 //************** Inicia processo ****************/
 void iniciar_processo() {
 //Alimenta struct "user", com os dados so usuário
-   perguntar_nome(&u);
+  perguntar_nome(&u);
   perguntar_sexo(&u); 
   perguntar_idade(&u);
   perguntar_altura(&u);
