@@ -20,13 +20,6 @@ typedef struct {
     float macros[ALIMENTOS_POR_GRUPO][MACROS];
 } recebeAlimento;
 
-typedef struct {
-    float Kcal;
-    float prot;
-    float carb;
-    float gord;
-} Atividade;
-
 // Guarda os macros nutrientes e calorias totais diárias
 // a ser consumida pelo usuário, baseado no peso e nivél de ativiade física do usuário
 typedef struct {
