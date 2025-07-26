@@ -9,12 +9,13 @@
 
 
 #define QUANT_ALIMENTO 5
-#define TAM_NOME 50
 #define TAM_LINHA 250
 #define QUANT_PROT 2
 #define QUANT_CARB 2
-
-
+#define TAM_NOME             50   // Tamanho máximo de nomes (alimentos e grupos)
+#define MACROS                4   // Número de macronutrientes: calorias, proteínas, carboidratos, gorduras
+#define ALIMENTOS_POR_GRUPO  10   // Quantidade de alimentos cadastráveis por grupo
+#define NUM_GRUPOS            5   // Quantidade de grupos de alimentos: proteínas, carboidratos, legumes, vegetais, bebidas
 
 
 
@@ -118,7 +119,7 @@ Retorno:
 
 
 int table_nutriction(infor_nutri_alimento* saida, select_alimento* sa) {
-    for (int j = 0; j < QUANT_ALIMENTO; j++) {
+    for (int j = 0; j < NUM_GRUPOS; j++) {
 
         FILE *f = fopen("Tabela_Nutricional.txt", "r");
         if (!f) {
@@ -205,29 +206,41 @@ printf("Tamanhos: %zu vs %zu\n", strlen(nomeAlimento), strlen(sa[j].alimentos_es
 * Retorno:                                                                                                                *
 *  - void                                                                                                                 *
 ***************************************************************************************************************************/
-void recebe_alimentos(recebeAlimento a[]) {
-    int limp;
+void recebe_alimentos(recebeAlimento** a) {
+    *a = malloc(sizeof(recebeAlimento));
+    if (*a == NULL) {
+        printf("Erro de alocacao!\n");
+        return;
+    }
 
-    for (int i = 0; i < QUANT_ALIMENTO; i++) {
-        printf("\n******************************Inicia processo de alimentacao da tabela*********************************\n");
+    char grupos[NUM_GRUPOS][TAM_NOME] = {
+        "proteinas", "carboidratos", "legumes", "vegetais", "bebidas"
+    };
+    char nome_macros[MACROS][TAM_NOME] = {
+        "calorias: ", "proteinas: ", "carboidratos: ", "gorduras: "
+    };
 
-        ler_string(a[i].nome_alimento, TAM_NOME, "\nAlimento: ");
+    printf("\n****************************** Início do cadastro de alimentos ******************************\n");
 
-        printf("Calorias para cada 100g do alimento: ");
-        scanf(" %f", &a[i].calorias);
-        while ((limp = getchar()) != '\n' && limp != EOF);
+    int alimento_atual = 0;
 
-        printf("Proteína para cada 100g do alimento: ");
-        scanf(" %f", &a[i].proteina);
-        while ((limp = getchar()) != '\n' && limp != EOF);
+    for (int i = 0; i < NUM_GRUPOS; i++) {
+        strcpy((*a)->grupo_de_alimentos[i], grupos[i]);
+        printf("%s\n", (*a)->grupo_de_alimentos[i]);
 
-        printf("Carboidrato para cada 100g do alimento: ");
-        scanf(" %f", &a[i].carboidrato);
-        while ((limp = getchar()) != '\n' && limp != EOF);
+        for (int j = 0; j < ALIMENTOS_POR_GRUPO; j++) {
+            printf(" %dº - ", j + 1);
+            ler_string((*a)->nome_alimento[alimento_atual], TAM_NOME, "Alimento: ");
 
-        printf("Gordura para cada 100g do alimento: ");
-        scanf(" %f", &a[i].gordura);
-        while ((limp = getchar()) != '\n' && limp != EOF);
+            for (int k = 0; k < MACROS; k++) {
+                printf("%s", nome_macros[k]);
+                scanf("%f", &(*a)->macros[alimento_atual][k]);
+                int c;
+                while ((c = getchar()) != '\n' && c != EOF);
+            }
+            alimento_atual++;
+            printf("\n");
+        }
     }
 }
 
@@ -239,29 +252,30 @@ void recebe_alimentos(recebeAlimento a[]) {
 *  - void                                                                                *
 ******************************************************************************************/
 
-void grava_alimentos(recebeAlimento a[]){
-FILE *f = fopen("Tabela_Nutricional.txt", "w");
-    if(f == NULL){
-        printf("Erro ao abrir arquivo!");
+void grava_alimentos(recebeAlimento** a) {
+    FILE *f = fopen("Tabela_Nutricional.txt", "w");
+    if (f == NULL) {
+        printf("Erro ao abrir o arquivo.\n");
         return;
     }
 
-// carregar QUANT_ALIMENT0 no arquivo
-    for(int i=0; i<QUANT_ALIMENTO; i++){
-    fprintf(f, "%s", a[i].nome_alimento);
-        fprintf(f, " %.2f %.2f %.2f %.2f\n", a[i].calorias, a[i].proteina, a[i].carboidrato, a[i].gordura);
+    int alimento_atual = 0;
+
+    for (int i = 0; i < NUM_GRUPOS; i++) {
+        fprintf(f, "%s\n", (*a)->grupo_de_alimentos[i]);
+
+        for (int j = 0; j < ALIMENTOS_POR_GRUPO; j++) {
+            fprintf(f, "%s, ", (*a)->nome_alimento[alimento_atual]);
+
+            for (int k = 0; k < MACROS; k++) {
+                fprintf(f, "%.2f ", (*a)->macros[alimento_atual][k]);
+            }
+            fprintf(f, "\n");
+            alimento_atual++;
+        }
     }
 
-fprintf(f, "\nArquivo criado com sucesso!\n");
-
     fclose(f);
-    
-printf("\nAlimento: %s\n", a->nome_alimento);
-printf("calorias: %2.f\n", a->calorias);
-printf("proteina: %2.f\n", a->proteina);
-printf("carboidrato: %2.f\n", a->carboidrato);
-printf("gordura: %2.f\n\n", a->gordura);
-
 }
 /****************************************************************************************************/
 /***********************************GERA MENU DE ALIMENTOS ******************************************/

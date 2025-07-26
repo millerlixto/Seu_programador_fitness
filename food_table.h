@@ -5,20 +5,20 @@
 #include "other_functions.h"
 
 #define TAM_NOME 50
-#define QUANT_ALIMENTO 5
+#define MACROS 4
+#define ALIMENTOS_POR_GRUPO 10
+#define NUM_GRUPOS          5
 
 /***********************************************/
 /*******************ESTRUTURAS******************/
 /***********************************************/
 
 //recebe lista de alimentos para gravar no menu
-typedef struct{
-char nome_alimento[TAM_NOME];
-float calorias;
-float proteina;
-float carboidrato;
-float gordura;
-}recebeAlimento;
+typedef struct {
+    char grupo_de_alimentos[NUM_GRUPOS][TAM_NOME];
+    char nome_alimento[ALIMENTOS_POR_GRUPO][TAM_NOME];
+    float macros[ALIMENTOS_POR_GRUPO][MACROS];
+} recebeAlimento;
 
 typedef struct {
     float Kcal;
@@ -31,13 +31,13 @@ typedef struct {
 // a ser consumida pelo usuário, baseado no peso e nivél de ativiade física do usuário
 typedef struct {
     int peso;
-    float grupo[4];    
+    float grupo[MACROS];    
 } MacrosNutr;
 
 //agrupa os alimentos com os macros para cada 100g 
 typedef struct {
-    char alimento[QUANT_ALIMENTO][TAM_NOME];  // nomes dos alimentos encontrados
-    float macros_para_100g[QUANT_ALIMENTO][4]; // Kcal, Prot, Carb, Gord
+    char alimento[NUM_GRUPOS][TAM_NOME];  // nomes dos alimentos encontrados
+    float macros_para_100g[NUM_GRUPOS][MACROS]; // Kcal, Prot, Carb, Gord
 } infor_nutri_alimento;
 
 typedef struct{
@@ -63,9 +63,9 @@ int table_nutriction(infor_nutri_alimento* saida, select_alimento* sa);
 /****************************************************************************************************/
 
 //função recebe uma lista de alimentos
-void recebe_alimentos(recebeAlimento a[]);
+void recebe_alimentos(recebeAlimento** a);
 //função que carrega a lista de alimentos no arquivo
-void grava_alimentos(recebeAlimento *a);
+void grava_alimentos(recebeAlimento** a);
 
 
 
