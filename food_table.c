@@ -289,19 +289,23 @@ void grava_alimentos(recebeAlimento** a) {
 * Retorno:                                                                                                             *
 *  - void                                                                                                              *
 ************************************************************************************************************************/
-void menu_recebe_alimentos(menu m[]) {
+void menu_recebe_alimentos(menu* m) {
 
- printf("\n******************************Inicia processo de alimentacao do Menu*********************************\n");
+const char *grupos_nomes[NUM_GRUPOS] = {
+    "proteinas", "carboidratos", "legumes", "vegetais", "bebidas"
+};
 
-    for (int i = 0; i < QUANT_PROT; i++) {
-       
-        ler_string(m[i].menu_prot, TAM_NOME, "Proteinas: "); 
-    }
-printf("\n");
+    printf("\n********** Início do preenchimento do menu **********\n");
 
-     for (int i = 0; i < QUANT_CARB; i++) {
-       
-        ler_string(m[i].menu_carb, TAM_NOME, "Carboidratos: "); 
+    for (int grupo = 0; grupo < NUM_GRUPOS; grupo++) {
+        printf("\nGrupo: %s\n", grupos_nomes[grupo]);
+
+        for (int i = 0; i < ALIMENTOS_POR_GRUPO; i++) {
+            printf("%dº - ", i + 1);
+            printf("Alimento: ");
+            fgets(m->alimentos[grupo][i], TAM_NOME, stdin);
+            m->alimentos[grupo][i][strcspn(m->alimentos[grupo][i], "\n")] = '\0'; // Remove '\n'
+        }
     }
 }
 /*******************************menu_grava_alimentos******************************
@@ -311,31 +315,30 @@ printf("\n");
 * Retorno:                                                                       *
 *  - void                                                                        *
 **********************************************************************************/
-void menu_grava_alimentos(menu m[]){
+void menu_grava_alimentos(menu* m) {
+
+const char *grupos_nomes[NUM_GRUPOS] = {
+    "proteinas", "carboidratos", "legumes", "vegetais", "bebidas"
+};
+
     FILE *f = fopen("Menu.txt", "w");
     if (f == NULL) {
-        printf("Erro ao abrir arquivo!");
+        printf("Erro ao abrir arquivo!\n");
         return;
     }
-    // Grava linha das proteínas
-    fprintf(f, "PROTEINAS ");  
-    for (int i = 0; i < QUANT_PROT; i++) {
-        fprintf(f, "%s, ", m[i].menu_prot); // Escreve alimento 
-    }
-    fprintf(f, "\n");  
 
-    // Grava linha dos carboidratos
-    fprintf(f, "CARBOIDRATOS ");  
-    for (int i = 0; i < QUANT_CARB; i++) {
-        fprintf(f, "%s, ", m[i].menu_carb);  // Escreve alimento 
+    for (int grupo = 0; grupo < NUM_GRUPOS; grupo++) {
+        fprintf(f, "%s", grupos_nomes[grupo]); // Escreve nome do grupo
+
+        for (int i = 0; i < ALIMENTOS_POR_GRUPO; i++) {
+            fprintf(f, ", %s", m->alimentos[grupo][i]); // Escreve os alimentos
+        }
+
+        fprintf(f, "\n"); // Nova linha por grupo
     }
-    fprintf(f, "\n");  
 
     fclose(f);
-//printf("Proteina: %s\n", m->menu_prot);
-//printf("\nCarboidrato: %s\n", m->menu_carb);
-
-    printf("Arquivo criado com sucesso!\n\n");  
+    printf("Arquivo 'Menu.txt' criado com sucesso!\n\n");
 }
 
 

@@ -4,36 +4,26 @@
 #include "start_food_table.h"
 #include "food_table.h"
 
-#define TAM_NOME 50
+
 
 void alimenta_tabela() {
 
-user u; 
-recebeAlimento a; 
-ativ_fisica at; 
-infor_nutri_alimento s;
+
+recebeAlimento *a = NULL; 
 menu m;
 
-//char nome_arquivo1 [TAM_NOME] = "Tabela_Nutricional.txt";
-//char nome_arquivo2 [TAM_NOME] = "Menu.txt";
-char nome_arquivo3 [TAM_NOME] = "macros_tabela.txt";
-
-//table_nutriction(&s);
 
 /***********************************Gerar tabela nutricional******************************************/
 
-//recebe_alimentos(&a); //recebe as informacões nutricionais dos alimentos 
-//grava_alimentos(&a);//grava as informacões as nutricionais dos alimentos no arquivo
+recebe_alimentos(&a); //recebe as informacões nutricionais dos alimentos 
+grava_alimentos(&a);//grava as informacões as nutricionais dos alimentos no arquivo
 
 
 /***********************************Gerar Menu de alimentos******************************************/
 
-//menu_recebe_alimentos(&m);
-//menu_grava_alimentos(&m);
+menu_recebe_alimentos(&m);
+menu_grava_alimentos(&m);
 
-/***********************************visualiza arquivos gravados******************************************/
-
-//visualiza_aquivo(nome_arquivo3);
 
 /***********************************Gera menu para seleção dos alimentos******************************************/
 

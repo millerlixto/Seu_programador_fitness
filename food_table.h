@@ -40,10 +40,9 @@ typedef struct {
     float macros_para_100g[NUM_GRUPOS][MACROS]; // Kcal, Prot, Carb, Gord
 } infor_nutri_alimento;
 
-typedef struct{
- char menu_prot[0];
- char menu_carb[0];
-}menu;
+typedef struct {
+    char alimentos[NUM_GRUPOS][ALIMENTOS_POR_GRUPO][TAM_NOME];
+} menu;
 
 /***********************************************/
 /**************FUNÇÔES NUTRICINAIS**************/
@@ -75,9 +74,9 @@ void grava_alimentos(recebeAlimento** a);
 /****************************************************************************************************/
 
 //função recebe uma lista de alimentos para o menu
-void menu_recebe_alimentos(menu m[]);
+void menu_recebe_alimentos(menu* m);
 //função que carrega os alimentos no arquivo
-void menu_grava_alimentos(menu *m);
+void menu_grava_alimentos(menu* m);
 //visualiza o arquivo 
 
 
