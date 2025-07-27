@@ -202,7 +202,7 @@ printf("Tamanhos: %zu vs %zu\n", strlen(nomeAlimento), strlen(sa[j].alimentos_es
 /*************************************************recebe_alimentos*********************************************************
 * A Função guarda nome de alimentos e seus marcos na struct recebe alimento para depois gerar um arquivo com os alimetos. *
 * Parâmetros:                                                                                                             *
-*  - recebeAlimento a[]: aponta para struct onde os dados serão armazenados                                               *
+*  - recebeAlimento a: aponta para struct onde os dados serão armazenados                                               *
 * Retorno:                                                                                                                *
 *  - void                                                                                                                 *
 ***************************************************************************************************************************/
@@ -247,7 +247,7 @@ void recebe_alimentos(recebeAlimento** a) {
 /***************************grava_alimentos**********************************************
 * A Função grava o nome dos alimentos e seus marcos no arquivo "Tabela_Nutricional.txt". *
 * Parâmetros:                                                                            *
-*  - recebeAlimento a[]: aponta para struct onde os dados estão armazenados              *
+*  - recebeAlimento a: aponta para struct onde os dados estão armazenados              *
 * Retorno:                                                                               *
 *  - void                                                                                *
 ******************************************************************************************/
@@ -285,7 +285,7 @@ void grava_alimentos(recebeAlimento** a) {
 /*****************************************menu_recebe_alimentos*********************************************************
 * A Função guarda nome de alimentos e seus marcos na struct menu para depois gerar um arquivo com um menu de alimetos. *
 * Parâmetros:                                                                                                          *
-*  - menu m[]: aponta para struct onde os dados serão armazenados                                                      *
+*  - menu m: aponta para struct onde os dados serão armazenados                                                      *
 * Retorno:                                                                                                             *
 *  - void                                                                                                              *
 ************************************************************************************************************************/
@@ -311,7 +311,7 @@ const char *grupos_nomes[NUM_GRUPOS] = {
 /*******************************menu_grava_alimentos******************************
 * A Função grava os nome de alimentos separados por grupos no arquivo "menu.txt" *
 * Parâmetros:                                                                    *
-*  - menu m[]: aponta para struct onde os dados estão armazenados                *
+*  - menu m: aponta para struct onde os dados estão armazenados                *
 * Retorno:                                                                       *
 *  - void                                                                        *
 **********************************************************************************/
@@ -340,5 +340,24 @@ const char *grupos_nomes[NUM_GRUPOS] = {
     fclose(f);
     printf("Arquivo 'Menu.txt' criado com sucesso!\n\n");
 }
+//recebe dados(qntidad e de macros diários) da struct MacrosNutr 
+void atualizar(plano_alimentar* pa) {
+    printf("Macros diários:\n");
+    printf("Peso: %d kg\n", pa->MacrosNutr.peso);
+    printf("Kcal: %.1f, Proteínas: %.1fg, Carboidratos: %.1fg, Gorduras: %.1fg\n\n",
+           pa->MacrosNutr.grupo[0], pa->MacrosNutr.grupo[1],
+           pa->MacrosNutr.grupo[2], pa->MacrosNutr.grupo[3]);
+
+    printf("Alimentos e macros por 100g:\n");
+    for (int i = 0; i < NUM_GRUPOS; i++) {
+        printf("- %s: Kcal=%.1f, Prot=%.1fg, Carb=%.1fg, Gord=%.1fg\n",
+               pa->infor_nutri_alimento.alimento[i],
+               pa->infor_nutri_alimento.macros_para_100g[i][0],
+               pa->infor_nutri_alimento.macros_para_100g[i][1],
+               pa->infor_nutri_alimento.macros_para_100g[i][2],
+               pa->infor_nutri_alimento.macros_para_100g[i][3]);
+    }
+}
+
 
 

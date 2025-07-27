@@ -12,19 +12,19 @@
 /***********************************************/
 /*******************ESTRUTURAS******************/
 /***********************************************/
-
+ 
 //recebe lista de alimentos para gravar no menu
 typedef struct {
-    char grupo_de_alimentos[NUM_GRUPOS][TAM_NOME];
-    char nome_alimento[ALIMENTOS_POR_GRUPO][TAM_NOME];
-    float macros[ALIMENTOS_POR_GRUPO][MACROS];
+    char grupo_de_alimentos[NUM_GRUPOS][TAM_NOME];//grupo de alimentos proteinas, carboidratos, legumes, vegetais, bebidas
+    char nome_alimento[ALIMENTOS_POR_GRUPO][TAM_NOME];//nome dos alimentos(10 alimentos por grupo)
+    float macros[ALIMENTOS_POR_GRUPO][MACROS];//macro nutrientes dos alimetnos(calorias, proteinas, carboidratos, gordura)
 } recebeAlimento;
 
 // Guarda os macros nutrientes e calorias totais diárias
 // a ser consumida pelo usuário, baseado no peso e nivél de ativiade física do usuário
 typedef struct {
     int peso;
-    float grupo[MACROS];    
+    float grupo[MACROS];//macros diários
 } MacrosNutr;
 
 //agrupa os alimentos com os macros para cada 100g 
@@ -34,8 +34,13 @@ typedef struct {
 } infor_nutri_alimento;
 
 typedef struct {
-    char alimentos[NUM_GRUPOS][ALIMENTOS_POR_GRUPO][TAM_NOME];
+    char alimentos[NUM_GRUPOS][ALIMENTOS_POR_GRUPO][TAM_NOME];// recebe os alimentos que irão gerar o arquivo 
 } menu;
+
+typedef struct{
+infor_nutri_alimento infor_nutri_alimento;
+MacrosNutr MacrosNutr;//aponta para a struct onde estão os macros diários a ser consumidos
+}plano_alimentar;
 
 /***********************************************/
 /**************FUNÇÔES NUTRICINAIS**************/
@@ -71,6 +76,8 @@ void menu_recebe_alimentos(menu* m);
 //função que carrega os alimentos no arquivo
 void menu_grava_alimentos(menu* m);
 //visualiza o arquivo 
+
+void atualizar(plano_alimentar* pa);
 
 
 
