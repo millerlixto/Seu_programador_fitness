@@ -173,7 +173,7 @@ printf("Tamanhos: %zu vs %zu\n", strlen(nomeAlimento), strlen(sa[j].alimentos_es
             printf("Alimento \"%s\" nao encontrado na tabela.\n", sa[j].alimentos_escolhidos);
             
         } 
-        /**********************impressão dos dados gerados**********************************
+        /**********************impressão de validação dos dados gerados **********************************
         else {
             printf("\nAlimento: %s\n", saida->alimento[j]);
             printf("Informacao nutricional para 100g (Kcal, Proteina, Carboidrato, Gordura): ");
@@ -339,71 +339,99 @@ const char *grupos_nomes[NUM_GRUPOS] = {
 
     fclose(f);
     printf("Arquivo 'Menu.txt' criado com sucesso!\n\n");
-}
-void atualizar(plano_alimentar* pa) {
-    float quantidade_em_gramas[NUM_GRUPOS] = {0}; // quantidade usada de cada alimento
-    float soma_macros[MACROS] = {0}; // calorias, proteínas, carboidratos, gorduras
 
-    float alvo[MACROS];
+/************************************************planoAlimentar************************************
+* A Função gera um plano alimentar baseado nos macros ideais entregue pela struct plano alimentar *
+* e nos alimentos escolhidos pelo usuário.                                                        *
+* Parâmetros:                                                                                     *
+*  - plano_alimentar pa: aponta para struct onde os dados estão armazenados                       *
+* Retorno:                                                                                        *
+*  - void                                                                                         *
+***************************************************************************************************/
+}
+void planoAlimentar(plano_alimentar* pa) {
+    // Inicializa vetor que armazena a quantidade (em gramas) usada de cada alimento
+    float quantidade_em_gramas[NUM_GRUPOS] = {0};
+
+    // Inicializa vetor para acumular os macros totais: [kcal, proteína, carboidrato, gordura]
+    float soma_macros[MACROS] = {0};
+
+    // Define o limite de macros que o usuário deve consumir (copiado da struct MacrosNutr)
+    float limite[MACROS];
     for (int i = 0; i < MACROS; i++) {
-        alvo[i] = pa->MacrosNutr.grupo[i];
+        limite[i] = pa->MacrosNutr.grupo[i];
     }
 
-    int macro_atual = 1; // começamos com proteína (índice 1)
+    int macro_atual = 1; // Começamos pelo macro proteína (índice 1). 
 
-    while (macro_atual <= 3) {
-        int progresso = 0;
+    // Loop para processar proteína (1), carboidrato (2) e gordura (3)
+    while (macro_atual <= MACROS -1) {
+        int progresso = 0; // Marca se conseguimos adicionar algum alimento neste ciclo
 
+        // Adicionar alimentos que contribuam para o macro atual
         for (int i = 0; i < NUM_GRUPOS; i++) {
+            // Pega o valor do macro atual (por 100g) do alimento 
             float valor_macro = pa->infor_nutri_alimento.macros_para_100g[i][macro_atual];
-            if (valor_macro == 0) continue;
+            if (valor_macro == 0) continue; // pula alimentos que não têm esse macro
 
-            float incremento = 50.0;
-            float fator = incremento / 100.0;
+            float incremento = 50.0;               // adicionar 50g por vez
+            float fator = incremento / 100.0;      // fator proporcional (macro por 100g)
 
+            // Calcula a nova soma de calorias e do macro atual 
             float nova_kcal = soma_macros[0] + (pa->infor_nutri_alimento.macros_para_100g[i][0] * fator);
             float novo_macro = soma_macros[macro_atual] + (valor_macro * fator);
 
-            // Prioridade: NÃO ULTRAPASSAR as calorias desejadas
-            if (nova_kcal <= alvo[0] && novo_macro <= alvo[macro_atual]) {
+            // Só adiciona se NÃO ultrapassar o limite de kcal e do macro atual
+            if (nova_kcal <= limite[0] && novo_macro <= limite[macro_atual]) {
+                // Soma 50g do alimento atual à quantidade total usada
                 quantidade_em_gramas[i] += incremento;
 
-                // atualiza todos os macros
+                // Atualiza todos os macros (kcal, proteína, carboidrato, gordura)
                 for (int j = 0; j < MACROS; j++) {
                     soma_macros[j] += pa->infor_nutri_alimento.macros_para_100g[i][j] * fator;
                 }
 
-                progresso = 1;
-                break; // tenta incrementar macro_atual de novo
+                progresso = 1; // conseguimos adicionar este alimento
+                break;         // tenta mais do mesmo macro (não muda de macro ainda)
             }
         }
 
         if (!progresso) {
-            // Não foi possível incrementar mais esse macro sem passar as calorias ou o macro
-            // Então avançamos para o próximo macro para evitar loop infinito
+            // Se nenhum alimento pôde ser adicionado, passa para o próximo macro
             macro_atual++;
-        } else if (soma_macros[macro_atual] >= alvo[macro_atual] * 0.98) {
-            // Já atingiu 98% do macro atual, avança
+        } else if (soma_macros[macro_atual] >= limite[macro_atual] * 0.98) {
+            // Se já atingimos ao menos 98% da meta do macro atual, podemos passar para o próximo
             macro_atual++;
         }
     }
 
-    printf("\n************** Sugestao de Quantidades ***************\n");
-    printf("\nQuantidade total de cada alimento utilizada:\n");
-    for (int i = 0; i < NUM_GRUPOS; i++) {
+    // Impressão final dos resultados
+
+    printf("\n************** Sugestao de Quantidades diarias ***************\n");
+    printf("************** tente dividir sua alimentacao em 6 refeicoes ***************\n\n");
+
+  //  printf("\nQuantidade total de cada alimento utilizada:\n");
+  for (int i = 0; i < NUM_GRUPOS; i++) {
+    if (quantidade_em_gramas[i] == 0) {
+        printf("- %s: A vontade!\n", pa->infor_nutri_alimento.alimento[i]);
+    } else {
         printf("- %s: %.1fg\n", pa->infor_nutri_alimento.alimento[i], quantidade_em_gramas[i]);
     }
 
+
+ /**********************impressão de validação dos dados gerados **********************************
     printf("\nMacros totais atingidos:\n");
     printf("- Kcal=%.1f, Prot=%.1fg, Carb=%.1fg, Gord=%.1fg\n",
            soma_macros[0], soma_macros[1], soma_macros[2], soma_macros[3]);
 
     printf("\nMacros desejados:\n");
     printf("- Kcal=%.1f, Prot=%.1fg, Carb=%.1fg, Gord=%.1fg\n",
-           alvo[0], alvo[1], alvo[2], alvo[3]);
+           limite[0], limite[1], limite[2], limite[3]);
+/****************************************************************************************************/  
+
 }
-
-
+printf("\n**************Fim de aplicacao***************\n");
+}
 
 
 

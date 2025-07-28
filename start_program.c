@@ -24,8 +24,8 @@ void iniciar_processo() {
   perguntar_sexo(&u); 
   perguntar_idade(&u);
   perguntar_altura(&u);
-   perguntar_peso(&u);
-
+perguntar_peso(&u);
+   
  do {
         printf("Voce pratica alguma atividade fisica? (s/n): ");
         scanf(" %c", &resposta); 
@@ -51,7 +51,7 @@ void iniciar_processo() {
             printf("\n************** Avaliacao ***************\n");
             calc_IMC(&u);
             printf("Gasto Energetico Total: %.2f calorias (cal)\n", calc_GET(&at, &u));
-            printf("\n************* Precione qualquer tecla para seguirmos com o plano limentar ***************\n\n");
+            printf("\n***************************************\n\n");
             system("pause");
             system("cls");
            //Função recebe peso e nível de atividade, retorna 1 se achou, 0 caso contrário. Guarda na struct "MacrusNutr"
@@ -59,6 +59,11 @@ void iniciar_processo() {
           if (!macros_por_peso(&u, &at, &saida_MacrosNutr))printf("Nao foi possivel carregar os dados.\n\n");
          select_Menu(sa);
          table_nutriction(&saida_inf_nutri_alimento,sa);
+         // Copia os dados para o plano alimentar final
+pa.MacrosNutr = saida_MacrosNutr;
+pa.infor_nutri_alimento = saida_inf_nutri_alimento;
+// função que exibe o plano alimentar
+planoAlimentar(&pa);
          system("pause");
          
 
@@ -67,14 +72,13 @@ printf("\n************** ATENCAO! ***************\n");
     printf("\nPara melhores resultados, procure um nutricionista ou profissional de saude!\n\n");
 
 
-
 system("pause");
 
 // Copia os dados para o plano alimentar final
 pa.MacrosNutr = saida_MacrosNutr;
 pa.infor_nutri_alimento = saida_inf_nutri_alimento;
-// Chama função que exibe o plano final
-atualizar(&pa);
+// função que exibe o plano alimentar
+planoAlimentar(&pa);
     
 }
 

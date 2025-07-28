@@ -77,7 +77,7 @@ void menu_recebe_alimentos(menu* m);
 void menu_grava_alimentos(menu* m);
 //visualiza o arquivo 
 
-void atualizar(plano_alimentar* pa);
+void planoAlimentar(plano_alimentar* pa);
 
 
 

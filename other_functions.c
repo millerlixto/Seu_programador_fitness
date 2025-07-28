@@ -449,7 +449,7 @@ void select_Menu(select_alimento* sa) {
      * Escolha dos alimentos pelo usuário *
      **************************************/
     for (int grupo = 0; grupo < total_grupos; grupo++) {
-         printf("\n************** Sugestao de Plano Alimentar ***************\n\n");
+         printf("\n************** Sugestao de de alimento para plano alimentar ***************\n");
         printf("Escolha 1 alimento do grupo %s:\n", alimentos[grupo][0]);
 
         // Lista alimentos disponíveis para esse grupo
