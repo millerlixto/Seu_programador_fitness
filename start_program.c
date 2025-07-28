@@ -65,21 +65,6 @@ pa.infor_nutri_alimento = saida_inf_nutri_alimento;
 // função que exibe o plano alimentar
 planoAlimentar(&pa);
 system("pause");
-
-
-
-printf("\n************** ATENCAO! ***************\n");
-printf("\nPara melhores resultados, procure um nutricionista ou profissional de saude!\n\n");
-
-
-system("pause");
-
-// Copia os dados para o plano alimentar final
-pa.MacrosNutr = saida_MacrosNutr;
-pa.infor_nutri_alimento = saida_inf_nutri_alimento;
-// função que exibe o plano alimentar
-planoAlimentar(&pa);
-
 }
 
 

@@ -147,7 +147,7 @@ int table_nutriction(infor_nutri_alimento* saida, select_alimento* sa) {
             nomeAlimento[strcspn(nomeAlimento, "\n")] = '\0';
 
             if (sscanf(strtok(NULL, ""), "%f %f %f %f",
-             &valores[0], &valores[1], &valores[2], &valores[3]) != 4) {
+               &valores[0], &valores[1], &valores[2], &valores[3]) != 4) {
                 continue;
         }
 /********tratamento de erro, espaço a direita da string - strcmp sensível a espaços**************
@@ -408,7 +408,7 @@ void planoAlimentar(plano_alimentar* pa) {
     // Impressão final dos resultados
 
     printf("\n************** Sugestao de Quantidades diarias ***************\n");
-    printf("************** tente dividir sua alimentacao em 6 refeicoes ***************\n\n");
+    printf("******** tente dividir sua alimentacao em 6 refeicoes ********\n\n");
 
   //  printf("\nQuantidade total de cada alimento utilizada:\n");
     for (int i = 0; i < NUM_GRUPOS; i++) {
@@ -430,7 +430,10 @@ void planoAlimentar(plano_alimentar* pa) {
 /****************************************************************************************************/  
 
     }
-    printf("\n**************Fim de aplicacao***************\n");
+    printf("\n******************************** ATENCAO! ************************************\n");
+    printf("Para melhores resultados, procure um nutricionista ou profissional de saude!\n");
+    printf("******************************************************************************\n\n");
+    printf("**************Fim de aplicacao***************\n\n\n");
 }
 
 
