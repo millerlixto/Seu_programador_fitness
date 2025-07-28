@@ -66,12 +66,13 @@ void iniciar_processo() {
 printf("\n************** ATENCAO! ***************\n");
     printf("\nPara melhores resultados, procure um nutricionista ou profissional de saude!\n\n");
 
-// Copia os dados para o plano alimentar final
-pa.MacrosNutr = saida_MacrosNutr;
-pa.infor_nutri_alimento = saida_inf_nutri_alimento;
+
 
 system("pause");
 
+// Copia os dados para o plano alimentar final
+pa.MacrosNutr = saida_MacrosNutr;
+pa.infor_nutri_alimento = saida_inf_nutri_alimento;
 // Chama função que exibe o plano final
 atualizar(&pa);
     

@@ -158,7 +158,7 @@ printf("Tamanhos: %zu vs %zu\n", strlen(nomeAlimento), strlen(sa[j].alimentos_es
 **********************tratamento de erro*****************************************************/             
             if (strcmp(nomeAlimento, sa[j].alimentos_escolhidos) == 0) {
                 strncpy(saida->alimento[j], nomeAlimento, TAM_NOME - 1);
-                saida->alimento[j][TAM_NOME - 1] = '\0';
+                saida->alimento[j][TAM_NOME - 1] = '\0';//força que ultimo caracter seja o '\0'
 
                 for (int i = 0; i < 4; i++) {
                     saida->macros_para_100g[j][i] = valores[i];
@@ -340,24 +340,70 @@ const char *grupos_nomes[NUM_GRUPOS] = {
     fclose(f);
     printf("Arquivo 'Menu.txt' criado com sucesso!\n\n");
 }
-//recebe dados(qntidad e de macros diários) da struct MacrosNutr 
 void atualizar(plano_alimentar* pa) {
-    printf("Macros diários:\n");
-    printf("Peso: %d kg\n", pa->MacrosNutr.peso);
-    printf("Kcal: %.1f, Proteínas: %.1fg, Carboidratos: %.1fg, Gorduras: %.1fg\n\n",
-           pa->MacrosNutr.grupo[0], pa->MacrosNutr.grupo[1],
-           pa->MacrosNutr.grupo[2], pa->MacrosNutr.grupo[3]);
+    float quantidade_em_gramas[NUM_GRUPOS] = {0}; // quantidade usada de cada alimento
+    float soma_macros[MACROS] = {0}; // calorias, proteínas, carboidratos, gorduras
 
-    printf("Alimentos e macros por 100g:\n");
-    for (int i = 0; i < NUM_GRUPOS; i++) {
-        printf("- %s: Kcal=%.1f, Prot=%.1fg, Carb=%.1fg, Gord=%.1fg\n",
-               pa->infor_nutri_alimento.alimento[i],
-               pa->infor_nutri_alimento.macros_para_100g[i][0],
-               pa->infor_nutri_alimento.macros_para_100g[i][1],
-               pa->infor_nutri_alimento.macros_para_100g[i][2],
-               pa->infor_nutri_alimento.macros_para_100g[i][3]);
+    float alvo[MACROS];
+    for (int i = 0; i < MACROS; i++) {
+        alvo[i] = pa->MacrosNutr.grupo[i];
     }
+
+    int macro_atual = 1; // começamos com proteína (índice 1)
+
+    while (macro_atual <= 3) {
+        int progresso = 0;
+
+        for (int i = 0; i < NUM_GRUPOS; i++) {
+            float valor_macro = pa->infor_nutri_alimento.macros_para_100g[i][macro_atual];
+            if (valor_macro == 0) continue;
+
+            float incremento = 50.0;
+            float fator = incremento / 100.0;
+
+            float nova_kcal = soma_macros[0] + (pa->infor_nutri_alimento.macros_para_100g[i][0] * fator);
+            float novo_macro = soma_macros[macro_atual] + (valor_macro * fator);
+
+            // Prioridade: NÃO ULTRAPASSAR as calorias desejadas
+            if (nova_kcal <= alvo[0] && novo_macro <= alvo[macro_atual]) {
+                quantidade_em_gramas[i] += incremento;
+
+                // atualiza todos os macros
+                for (int j = 0; j < MACROS; j++) {
+                    soma_macros[j] += pa->infor_nutri_alimento.macros_para_100g[i][j] * fator;
+                }
+
+                progresso = 1;
+                break; // tenta incrementar macro_atual de novo
+            }
+        }
+
+        if (!progresso) {
+            // Não foi possível incrementar mais esse macro sem passar as calorias ou o macro
+            // Então avançamos para o próximo macro para evitar loop infinito
+            macro_atual++;
+        } else if (soma_macros[macro_atual] >= alvo[macro_atual] * 0.98) {
+            // Já atingiu 98% do macro atual, avança
+            macro_atual++;
+        }
+    }
+
+    printf("\n************** Sugestao de Quantidades ***************\n");
+    printf("\nQuantidade total de cada alimento utilizada:\n");
+    for (int i = 0; i < NUM_GRUPOS; i++) {
+        printf("- %s: %.1fg\n", pa->infor_nutri_alimento.alimento[i], quantidade_em_gramas[i]);
+    }
+
+    printf("\nMacros totais atingidos:\n");
+    printf("- Kcal=%.1f, Prot=%.1fg, Carb=%.1fg, Gord=%.1fg\n",
+           soma_macros[0], soma_macros[1], soma_macros[2], soma_macros[3]);
+
+    printf("\nMacros desejados:\n");
+    printf("- Kcal=%.1f, Prot=%.1fg, Carb=%.1fg, Gord=%.1fg\n",
+           alvo[0], alvo[1], alvo[2], alvo[3]);
 }
+
+
 
 
 
