@@ -9,14 +9,13 @@ void alimenta_tabela(void);
 
 int main() {
 //iniciar processo do programa
-iniciar_processo();
+    iniciar_processo();
 
-//iniciar processo de alimentação de tabela
+     //iniciar processo de alimentação de tabela
  //alimenta_tabela();
-
-   system("pause");
-  
-  
+    
+    system("pause");
+    
+    
     return 0;
 }
- 

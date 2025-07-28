@@ -131,7 +131,7 @@ int table_nutriction(infor_nutri_alimento* saida, select_alimento* sa) {
         char *nomeAlimento;
         float valores[4];
         int encontrado = 0;
-       
+        
         // Limpa espaços extras do nome escolhido pelo usuário
         remove_espacos_str(sa[j].alimentos_escolhidos);
 
@@ -141,23 +141,23 @@ int table_nutriction(infor_nutri_alimento* saida, select_alimento* sa) {
             nomeAlimento = strtok(linha, ",");
             if (!nomeAlimento) continue;
             // Limpa espaços extras do nome escolhido pelo usuário
-               remove_espacos_str(nomeAlimento);
+            remove_espacos_str(nomeAlimento);
 
             while (*nomeAlimento == ' ') nomeAlimento++;
             nomeAlimento[strcspn(nomeAlimento, "\n")] = '\0';
 
             if (sscanf(strtok(NULL, ""), "%f %f %f %f",
-                       &valores[0], &valores[1], &valores[2], &valores[3]) != 4) {
+             &valores[0], &valores[1], &valores[2], &valores[3]) != 4) {
                 continue;
-            }
+        }
 /********tratamento de erro, espaço a direita da string - strcmp sensível a espaços**************
 
 printf("Comparando: |%s| <-> |%s|\n", nomeAlimento, sa[j].alimentos_escolhidos);
 printf("Tamanhos: %zu vs %zu\n", strlen(nomeAlimento), strlen(sa[j].alimentos_escolhidos));
 
 **********************tratamento de erro*****************************************************/             
-            if (strcmp(nomeAlimento, sa[j].alimentos_escolhidos) == 0) {
-                strncpy(saida->alimento[j], nomeAlimento, TAM_NOME - 1);
+        if (strcmp(nomeAlimento, sa[j].alimentos_escolhidos) == 0) {
+            strncpy(saida->alimento[j], nomeAlimento, TAM_NOME - 1);
                 saida->alimento[j][TAM_NOME - 1] = '\0';//força que ultimo caracter seja o '\0'
 
                 for (int i = 0; i < 4; i++) {
@@ -169,7 +169,7 @@ printf("Tamanhos: %zu vs %zu\n", strlen(nomeAlimento), strlen(sa[j].alimentos_es
         }
         fclose(f);
 
-     if (!encontrado) {
+        if (!encontrado) {
             printf("Alimento \"%s\" nao encontrado na tabela.\n", sa[j].alimentos_escolhidos);
             
         } 
@@ -291,9 +291,9 @@ void grava_alimentos(recebeAlimento** a) {
 ************************************************************************************************************************/
 void menu_recebe_alimentos(menu* m) {
 
-const char *grupos_nomes[NUM_GRUPOS] = {
-    "proteinas", "carboidratos", "legumes", "vegetais", "bebidas"
-};
+    const char *grupos_nomes[NUM_GRUPOS] = {
+        "proteinas", "carboidratos", "legumes", "vegetais", "bebidas"
+    };
 
     printf("\n********** Início do preenchimento do menu **********\n");
 
@@ -317,9 +317,9 @@ const char *grupos_nomes[NUM_GRUPOS] = {
 **********************************************************************************/
 void menu_grava_alimentos(menu* m) {
 
-const char *grupos_nomes[NUM_GRUPOS] = {
-    "proteinas", "carboidratos", "legumes", "vegetais", "bebidas"
-};
+    const char *grupos_nomes[NUM_GRUPOS] = {
+        "proteinas", "carboidratos", "legumes", "vegetais", "bebidas"
+    };
 
     FILE *f = fopen("Menu.txt", "w");
     if (f == NULL) {
@@ -411,12 +411,12 @@ void planoAlimentar(plano_alimentar* pa) {
     printf("************** tente dividir sua alimentacao em 6 refeicoes ***************\n\n");
 
   //  printf("\nQuantidade total de cada alimento utilizada:\n");
-  for (int i = 0; i < NUM_GRUPOS; i++) {
-    if (quantidade_em_gramas[i] == 0) {
-        printf("- %s: A vontade!\n", pa->infor_nutri_alimento.alimento[i]);
-    } else {
-        printf("- %s: %.1fg\n", pa->infor_nutri_alimento.alimento[i], quantidade_em_gramas[i]);
-    }
+    for (int i = 0; i < NUM_GRUPOS; i++) {
+        if (quantidade_em_gramas[i] == 0) {
+            printf("- %s: A vontade!\n", pa->infor_nutri_alimento.alimento[i]);
+        } else {
+            printf("- %s: %.1fg\n", pa->infor_nutri_alimento.alimento[i], quantidade_em_gramas[i]);
+        }
 
 
  /**********************impressão de validação dos dados gerados **********************************
@@ -429,8 +429,8 @@ void planoAlimentar(plano_alimentar* pa) {
            limite[0], limite[1], limite[2], limite[3]);
 /****************************************************************************************************/  
 
-}
-printf("\n**************Fim de aplicacao***************\n");
+    }
+    printf("\n**************Fim de aplicacao***************\n");
 }
 
 

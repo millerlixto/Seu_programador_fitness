@@ -9,8 +9,8 @@
 void alimenta_tabela() {
 
 
-recebeAlimento *a = NULL; 
-menu m;
+	recebeAlimento *a = NULL; 
+	menu m;
 
 
 /***********************************Gerar tabela nutricional******************************************/
@@ -27,6 +27,6 @@ menu_grava_alimentos(&m);
 
 /***********************************Gera menu para seleção dos alimentos******************************************/
 
-   
-    
+
+
 }

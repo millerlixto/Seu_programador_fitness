@@ -7,7 +7,7 @@
 
 //guarda o nível de atividade do usuário: sedentário, levemente ativo, moderadamete ativo, muito ativo, extremamente ativo 
 typedef struct{
- int intensidade;                
+   int intensidade;                
 } ativ_fisica; 
 //guarda o alimento escolhido pelo usuário para montar um plano alimentar
 typedef struct {

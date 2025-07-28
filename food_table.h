@@ -12,7 +12,7 @@
 /***********************************************/
 /*******************ESTRUTURAS******************/
 /***********************************************/
- 
+
 //recebe lista de alimentos para gravar no menu
 typedef struct {
     char grupo_de_alimentos[NUM_GRUPOS][TAM_NOME];//grupo de alimentos proteinas, carboidratos, legumes, vegetais, bebidas
@@ -38,7 +38,7 @@ typedef struct {
 } menu;
 
 typedef struct{
-infor_nutri_alimento infor_nutri_alimento;
+    infor_nutri_alimento infor_nutri_alimento;
 MacrosNutr MacrosNutr;//aponta para a struct onde estão os macros diários a ser consumidos
 }plano_alimentar;
 
