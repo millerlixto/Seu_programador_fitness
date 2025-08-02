@@ -32,6 +32,10 @@ float valor_MET_User(ativ_fisica *at);
 void ler_string(char *buffer, int tamanho, const char *mensagem);
 //limpa o buffer
 void limpar_buffer();
+//ler apenas 's' ou 'n'
+char ler_sn(const char* mensagem);
+
+
 
 /***********************************************/
 /******************CONVERSÕES*******************/
@@ -53,8 +57,7 @@ double calc_GET(ativ_fisica *at, user *u);
 void calc_IMC(user *u);
 //Seleção de alimento no menu
 void select_Menu(select_alimento* sa);
-//calculo dos macros
-void calc_Macros(user *u,ativ_fisica* at, select_alimento* sa);
+
 
 
 

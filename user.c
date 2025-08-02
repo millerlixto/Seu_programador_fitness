@@ -6,7 +6,7 @@
 #include "user.h"
 #include "other_functions.h"
 
-#define TAM_NOME 100
+#define TAM_NOME 50
 
 /**********************************************/
 /**************dados do usuário****************/
@@ -19,12 +19,12 @@
 * Retorno:                                               *
 *  - void                                                *
 **********************************************************/
-void perguntar_nome(user *u) {
+void perguntar_nome(user* u) {
 
     do {
 
         // Alocar memória para o nome 
-        u->nome = (char *)malloc(TAM_NOME * sizeof(char));
+       u->nome = (char *)malloc(TAM_NOME * sizeof(char));
         if (u->nome == NULL) {
             //Tratar erro de alocação
             free(u); //Libera a memória de antes de sair
@@ -80,7 +80,7 @@ void perguntar_idade(user *u) {
             printf("\n\nErro: idade invalida!");
 
            
-            limpar_buffer();
+           limpar_buffer(); //int c ; while((c=getchar())!= '\n' && c != EOF);
 
         } else if (u->idade <= 0 || u->idade > 130) {
             printf("\n\nErro: idade invalida!");
@@ -183,6 +183,7 @@ void perguntar_peso(user *u) {
 *  - void                                                  *
 ************************************************************/
 void imprimir_dados(const user *u) {
+
     printf("Nome: %s\n", u->nome);
 // printf("sexo: %c\n", u->sexo);
     printf("Idade: %d anos\n", u->idade);

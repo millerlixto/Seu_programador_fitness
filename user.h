@@ -3,9 +3,10 @@
 
 
 
+
 typedef struct {//
     
-    char *nome;
+    char* nome;
     char sexo;
     int idade;
     int altura;
@@ -13,6 +14,7 @@ typedef struct {//
    
 } user;
 /**************dados do usuário****************/
+
 void perguntar_nome(user *u);
 void perguntar_sexo(user *u);
 void perguntar_idade(user *u);

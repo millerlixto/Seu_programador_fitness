@@ -9,20 +9,20 @@
 void alimenta_tabela() {
 
 
-	recebeAlimento *a = NULL; 
-	menu m;
+	aux_recebeAlimento aux; 
+	
 
 
 /***********************************Gerar tabela nutricional******************************************/
 
-recebe_alimentos(&a); //recebe as informacões nutricionais dos alimentos 
-grava_alimentos(&a);//grava as informacões as nutricionais dos alimentos no arquivo
+recebe_alimentos(&aux); //recebe as informacões nutricionais dos alimentos 
+grava_alimentos(&aux);//grava as informacões nutricionais dos alimentos no arquivo
 
 
 /***********************************Gerar Menu de alimentos******************************************/
 
-menu_recebe_alimentos(&m);
-menu_grava_alimentos(&m);
+
+menu_grava_alimentos(&aux);
 
 
 /***********************************Gera menu para seleção dos alimentos******************************************/

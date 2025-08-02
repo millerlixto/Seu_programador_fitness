@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <ctype.h>
 
 #include "food_table.h"
 #include "user.h"
@@ -10,14 +11,14 @@
 
 #define QUANT_ALIMENTO 5
 #define TAM_LINHA 250
-#define QUANT_PROT 2
-#define QUANT_CARB 2
-#define TAM_NOME             50   // Tamanho máximo de nomes (alimentos e grupos)
-#define MACROS                4   // Número de macronutrientes: calorias, proteínas, carboidratos, gorduras
-#define ALIMENTOS_POR_GRUPO  10   // Quantidade de alimentos cadastráveis por grupo
-#define NUM_GRUPOS            5   // Quantidade de grupos de alimentos: proteínas, carboidratos, legumes, vegetais, bebidas
+#define TAM_NOME 50   
+#define MACROS 4   
+#define ALIMENTOS_POR_GRUPO 10   
+#define NUM_GRUPOS 5   
 
-
+/***********************************************/
+/**************FUNÇÔES NUTRICINAIS**************/
+/***********************************************/
 
 /*************************************************macros_por_peso*****************************************************
 A função  preenche os macros nutrientes para um usuário com base no peso e na intensidade da atividade física
@@ -28,7 +29,7 @@ Parâmetros:
 Retorno:
   - 1 se os dados forem encontrados e preenchidos corretamente
   - 0 se houver erro (peso não encontrado ou falha ao abrir o arquivo)
-   *********************************************************************************************************************/
+***********************************************************************************************************************/
 
 int macros_por_peso(user *u, ativ_fisica *at, MacrosNutr *saida){
 
@@ -83,13 +84,14 @@ int macros_por_peso(user *u, ativ_fisica *at, MacrosNutr *saida){
             // Fecha o arquivo
             fclose(f);
 
-            //****************Impressões para validação*******************
-          //  printf("Peso encontrado: %d\n", saida->peso);
-         //   printf("Grupo %d (4 floats): ", niveisAtiv);
-          //  for (int i = 0; i < 4; i++) {
-          //      printf("%.2f ", saida->grupo[i]);
-           // }
-           // *******************************************************************/
+/****************Impressões de validação***************************
+
+           printf("Peso encontrado: %d\n", saida->peso);
+            printf("Grupo %d (4 floats): ", niveisAtiv);
+           for (int i = 0; i < 4; i++) {
+                printf("%.2f ", saida->grupo[i]);
+    
+*******************************************************************/
             printf("\n");
 
             // Retorna sucesso
@@ -99,9 +101,11 @@ int macros_por_peso(user *u, ativ_fisica *at, MacrosNutr *saida){
 
     // Fecha o arquivo se o peso não foi encontrado
     fclose(f);
-     //*********************Impressão de validação***************************
-   // printf("Peso nao encontrado no arquivo.\n");
-    //**********************************************************************
+/*********************Impressão de validação****
+
+ printf("Peso nao encontrado no arquivo.\n"); 
+
+/**********************************************/
     // Retorna falha
     return 0;
 }
@@ -115,8 +119,7 @@ Parâmetros:
 Retorno:
   - 1 se os dados forem encontrados e preenchidos corretamente
   - 0 se houver erro (falha ao abrir o arquivo)
-   *********************************************************************************************************************/
-
+*************************************************************************************************************************/
 
 int table_nutriction(infor_nutri_alimento* saida, select_alimento* sa) {
     for (int j = 0; j < NUM_GRUPOS; j++) {
@@ -155,7 +158,7 @@ int table_nutriction(infor_nutri_alimento* saida, select_alimento* sa) {
 printf("Comparando: |%s| <-> |%s|\n", nomeAlimento, sa[j].alimentos_escolhidos);
 printf("Tamanhos: %zu vs %zu\n", strlen(nomeAlimento), strlen(sa[j].alimentos_escolhidos));
 
-**********************tratamento de erro*****************************************************/             
+**************************tratamento de erro*****************************************************/             
         if (strcmp(nomeAlimento, sa[j].alimentos_escolhidos) == 0) {
             strncpy(saida->alimento[j], nomeAlimento, TAM_NOME - 1);
                 saida->alimento[j][TAM_NOME - 1] = '\0';//força que ultimo caracter seja o '\0'
@@ -182,197 +185,40 @@ printf("Tamanhos: %zu vs %zu\n", strlen(nomeAlimento), strlen(sa[j].alimentos_es
             }
             printf("\n");
         }
-        ***************************************************************************************/
-//********verificação de gravação na struct**************            
- //           printf(">>> Copiado com sucesso: %s | %.2f %.2f %.2f %.2f\n",
- //      saida->alimento[j],
- //      saida->macros_para_100g[j][0],
- //      saida->macros_para_100g[j][1],
- //      saida->macros_para_100g[j][2],
- //      saida->macros_para_100g[j][3]);
-//**************************************************************/
+        *************************************************************************************************/
+/********verificação de gravação na struct**************            
+           printf(">>> Copiado com sucesso: %s | %.2f %.2f %.2f %.2f\n",
+      saida->alimento[j],
+      saida->macros_para_100g[j][0],
+      saida->macros_para_100g[j][1],
+      saida->macros_para_100g[j][2],
+      saida->macros_para_100g[j][3]);
+**************************************************************/
     }
     return 1;
 }
-/****************************************************************************************************/
-/***********************************GERA TABELA NUTRICIONAL******************************************/
-/***********************************"Tabela_Nutricional.txt"*****************************************/
-/****************************************************************************************************/
 
-/*************************************************recebe_alimentos*********************************************************
-* A Função guarda nome de alimentos e seus marcos na struct recebe alimento para depois gerar um arquivo com os alimetos. *
-* Parâmetros:                                                                                                             *
-*  - recebeAlimento a: aponta para struct onde os dados serão armazenados                                               *
-* Retorno:                                                                                                                *
-*  - void                                                                                                                 *
-***************************************************************************************************************************/
-void recebe_alimentos(recebeAlimento** a) {
-    *a = malloc(sizeof(recebeAlimento));
-    if (*a == NULL) {
-        printf("Erro de alocacao!\n");
-        return;
-    }
-
-    char grupos[NUM_GRUPOS][TAM_NOME] = {
-        "proteinas", "carboidratos", "legumes", "vegetais", "bebidas"
-    };
-    char nome_macros[MACROS][TAM_NOME] = {
-        "calorias: ", "proteinas: ", "carboidratos: ", "gorduras: "
-    };
-
-    printf("\n****************************** Início do cadastro de alimentos ******************************\n");
-
-    int alimento_atual = 0;
-
-    for (int i = 0; i < NUM_GRUPOS; i++) {
-        strcpy((*a)->grupo_de_alimentos[i], grupos[i]);
-        printf("%s\n", (*a)->grupo_de_alimentos[i]);
-
-        for (int j = 0; j < ALIMENTOS_POR_GRUPO; j++) {
-            printf(" %dº - ", j + 1);
-            ler_string((*a)->nome_alimento[alimento_atual], TAM_NOME, "Alimento: ");
-
-            for (int k = 0; k < MACROS; k++) {
-                printf("%s", nome_macros[k]);
-                scanf("%f", &(*a)->macros[alimento_atual][k]);
-                int c;
-                while ((c = getchar()) != '\n' && c != EOF);
-            }
-            alimento_atual++;
-            printf("\n");
-        }
-    }
-}
-
-/***************************grava_alimentos**********************************************
-* A Função grava o nome dos alimentos e seus marcos no arquivo "Tabela_Nutricional.txt". *
-* Parâmetros:                                                                            *
-*  - recebeAlimento a: aponta para struct onde os dados estão armazenados              *
-* Retorno:                                                                               *
-*  - void                                                                                *
-******************************************************************************************/
-
-void grava_alimentos(recebeAlimento** a) {
-    FILE *f = fopen("Tabela_Nutricional.txt", "w");
-    if (f == NULL) {
-        printf("Erro ao abrir o arquivo.\n");
-        return;
-    }
-
-    int alimento_atual = 0;
-
-    for (int i = 0; i < NUM_GRUPOS; i++) {
-        fprintf(f, "%s\n", (*a)->grupo_de_alimentos[i]);
-
-        for (int j = 0; j < ALIMENTOS_POR_GRUPO; j++) {
-            fprintf(f, "%s, ", (*a)->nome_alimento[alimento_atual]);
-
-            for (int k = 0; k < MACROS; k++) {
-                fprintf(f, "%.2f ", (*a)->macros[alimento_atual][k]);
-            }
-            fprintf(f, "\n");
-            alimento_atual++;
-        }
-    }
-
-    fclose(f);
-}
-/****************************************************************************************************/
-/***********************************GERA MENU DE ALIMENTOS ******************************************/
-/****************************************"menu.txt"**************************************************/
-/****************************************************************************************************/
-
-/*****************************************menu_recebe_alimentos*********************************************************
-* A Função guarda nome de alimentos e seus marcos na struct menu para depois gerar um arquivo com um menu de alimetos. *
-* Parâmetros:                                                                                                          *
-*  - menu m: aponta para struct onde os dados serão armazenados                                                      *
-* Retorno:                                                                                                             *
-*  - void                                                                                                              *
-************************************************************************************************************************/
-void menu_recebe_alimentos(menu* m) {
-
-    const char *grupos_nomes[NUM_GRUPOS] = {
-        "proteinas", "carboidratos", "legumes", "vegetais", "bebidas"
-    };
-
-    printf("\n********** Início do preenchimento do menu **********\n");
-
-    for (int grupo = 0; grupo < NUM_GRUPOS; grupo++) {
-        printf("\nGrupo: %s\n", grupos_nomes[grupo]);
-
-        for (int i = 0; i < ALIMENTOS_POR_GRUPO; i++) {
-            printf("%dº - ", i + 1);
-            printf("Alimento: ");
-            fgets(m->alimentos[grupo][i], TAM_NOME, stdin);
-            m->alimentos[grupo][i][strcspn(m->alimentos[grupo][i], "\n")] = '\0'; // Remove '\n'
-        }
-    }
-}
-/*******************************menu_grava_alimentos******************************
-* A Função grava os nome de alimentos separados por grupos no arquivo "menu.txt" *
-* Parâmetros:                                                                    *
-*  - menu m: aponta para struct onde os dados estão armazenados                *
-* Retorno:                                                                       *
-*  - void                                                                        *
-**********************************************************************************/
-void menu_grava_alimentos(menu* m) {
-
-    const char *grupos_nomes[NUM_GRUPOS] = {
-        "proteinas", "carboidratos", "legumes", "vegetais", "bebidas"
-    };
-
-    FILE *f = fopen("Menu.txt", "w");
-    if (f == NULL) {
-        printf("Erro ao abrir arquivo!\n");
-        return;
-    }
-
-    for (int grupo = 0; grupo < NUM_GRUPOS; grupo++) {
-        fprintf(f, "%s", grupos_nomes[grupo]); // Escreve nome do grupo
-
-        for (int i = 0; i < ALIMENTOS_POR_GRUPO; i++) {
-            fprintf(f, ", %s", m->alimentos[grupo][i]); // Escreve os alimentos
-        }
-
-        fprintf(f, "\n"); // Nova linha por grupo
-    }
-
-    fclose(f);
-    printf("Arquivo 'Menu.txt' criado com sucesso!\n\n");
-
-/************************************************planoAlimentar************************************
-* A Função gera um plano alimentar baseado nos macros ideais entregue pela struct plano alimentar *
-* e nos alimentos escolhidos pelo usuário.                                                        *
-* Parâmetros:                                                                                     *
-*  - plano_alimentar pa: aponta para struct onde os dados estão armazenados                       *
-* Retorno:                                                                                        *
-*  - void                                                                                         *
-***************************************************************************************************/
-}
 void planoAlimentar(plano_alimentar* pa) {
-    // Inicializa vetor que armazena a quantidade (em gramas) usada de cada alimento
-    float quantidade_em_gramas[NUM_GRUPOS] = {0};
+    // Inicialização de variáveis 
+    float quantidade_em_gramas[NUM_GRUPOS] = {0}; // quantidade (em gramas) usada de cada alimento
+    float soma_macros[MACROS] = {0}; // macros totais (kcal, proteína, carboidrato, gordura)
+    float limite[MACROS];// Define o limite de macros que o usuário deve consumir (copiado da struct MacrosNutr)
 
-    // Inicializa vetor para acumular os macros totais: [kcal, proteína, carboidrato, gordura]
-    float soma_macros[MACROS] = {0};
-
-    // Define o limite de macros que o usuário deve consumir (copiado da struct MacrosNutr)
-    float limite[MACROS];
     for (int i = 0; i < MACROS; i++) {
         limite[i] = pa->MacrosNutr.grupo[i];
     }
 
-    int macro_atual = 1; // Começamos pelo macro proteína (índice 1). 
+    int macro_atual = 1; //contador
 
-    // Loop para processar proteína (1), carboidrato (2) e gordura (3)
+    // Adiciona as gramas de alientos e confere se não passou da quantidade de macros de sejados
     while (macro_atual <= MACROS -1) {
-        int progresso = 0; // Marca se conseguimos adicionar algum alimento neste ciclo
+        int progresso = 0; // Marca se conseguiu adicionar algum alimento sem ultrapassar o limite de macros
 
         // Adicionar alimentos que contribuam para o macro atual
         for (int i = 0; i < NUM_GRUPOS; i++) {
-            // Pega o valor do macro atual (por 100g) do alimento 
+            // Pega o valor do macro atual para 100g de alimento
             float valor_macro = pa->infor_nutri_alimento.macros_para_100g[i][macro_atual];
-            if (valor_macro == 0) continue; // pula alimentos que não têm esse macro
+            if (valor_macro == 0) continue; // pula alimentos se os macros forem zerados
 
             float incremento = 50.0;               // adicionar 50g por vez
             float fator = incremento / 100.0;      // fator proporcional (macro por 100g)
@@ -381,23 +227,23 @@ void planoAlimentar(plano_alimentar* pa) {
             float nova_kcal = soma_macros[0] + (pa->infor_nutri_alimento.macros_para_100g[i][0] * fator);
             float novo_macro = soma_macros[macro_atual] + (valor_macro * fator);
 
-            // Só adiciona se NÃO ultrapassar o limite de kcal e do macro atual
+            // Só adiciona se não ultrapassar o limite de kcal e do macro atual
             if (nova_kcal <= limite[0] && novo_macro <= limite[macro_atual]) {
                 // Soma 50g do alimento atual à quantidade total usada
                 quantidade_em_gramas[i] += incremento;
 
-                // Atualiza todos os macros (kcal, proteína, carboidrato, gordura)
+                // Atualiza todos os macros 
                 for (int j = 0; j < MACROS; j++) {
                     soma_macros[j] += pa->infor_nutri_alimento.macros_para_100g[i][j] * fator;
                 }
 
                 progresso = 1; // conseguimos adicionar este alimento
-                break;         // tenta mais do mesmo macro (não muda de macro ainda)
+                break;         // tenta mais 50g no mesmo macro
             }
         }
 
         if (!progresso) {
-            // Se nenhum alimento pôde ser adicionado, passa para o próximo macro
+            // Se o limite já afoi ultrapassado (macro atual)
             macro_atual++;
         } else if (soma_macros[macro_atual] >= limite[macro_atual] * 0.98) {
             // Se já atingimos ao menos 98% da meta do macro atual, podemos passar para o próximo
@@ -419,7 +265,8 @@ void planoAlimentar(plano_alimentar* pa) {
         }
 
 
- /**********************impressão de validação dos dados gerados **********************************
+/**********************impressão de validação dos dados gerados ************************************
+   
     printf("\nMacros totais atingidos:\n");
     printf("- Kcal=%.1f, Prot=%.1fg, Carb=%.1fg, Gord=%.1fg\n",
            soma_macros[0], soma_macros[1], soma_macros[2], soma_macros[3]);
@@ -427,6 +274,7 @@ void planoAlimentar(plano_alimentar* pa) {
     printf("\nMacros desejados:\n");
     printf("- Kcal=%.1f, Prot=%.1fg, Carb=%.1fg, Gord=%.1fg\n",
            limite[0], limite[1], limite[2], limite[3]);
+
 /****************************************************************************************************/  
 
     }
@@ -435,6 +283,213 @@ void planoAlimentar(plano_alimentar* pa) {
     printf("******************************************************************************\n\n");
     printf("**************Fim de aplicacao***************\n\n\n");
 }
+
+/****************************************************************************************************/
+/***********************************GERA TABELA NUTRICIONAL******************************************/
+/***********************************"Tabela_Nutricional.txt"*****************************************/
+/****************************************************************************************************/
+
+/*************************************************recebe_alimentos*********************************************************
+* A Função guarda nome de alimentos e seus marcos na struct recebe alimento para depois gerar um arquivo com os alimetos. *
+* Parâmetros:                                                                                                             *
+*  - recebeAlimento a: aponta para struct onde os dados serão armazenados                                                 *
+* Retorno:                                                                                                                *
+*  - void                                                                                                                 *
+***************************************************************************************************************************/
+// Funcao principal para cadastro dos alimentos
+void recebe_alimentos(aux_recebeAlimento* aux) {
+    const char grupos[NUM_GRUPOS][TAM_NOME] = {
+        "proteinas", "carboidratos", "legumes", "vegetais", "bebidas"
+    };
+    const char nome_macros[MACROS][TAM_NOME] = {
+        "calorias: ", "proteinas: ", "carboidratos: ", "gorduras: "
+    };
+
+    aux->recebeAlimento = NULL;
+    aux->total_alimentos_cadastrados = 0;
+
+    char continuar = 's';
+
+    printf("\n********** Inicio do cadastro de alimentos **********\n");
+
+    int i=0;
+    while (continuar == 's') {
+
+        printf("\nGrupo: %s\n", grupos[i]);
+        for (int j = 0; j < ALIMENTOS_POR_GRUPO; j++) {
+
+            aux->recebeAlimento = realloc(aux->recebeAlimento, sizeof(recebeAlimento) * (aux->total_alimentos_cadastrados + 1));
+            if (!aux->recebeAlimento) {
+                printf("Erro na alocacao de memoria.\n");
+                exit(1);
+            }
+
+            recebeAlimento* novo = &(aux->recebeAlimento[aux->total_alimentos_cadastrados]);
+
+            // Se j == 0, esta entrada representa o grupo (nao um alimento real)
+            if (j == 0) {
+                novo->grupo_de_alimentos = malloc(strlen(grupos[i]) + 1);
+                strcpy(novo->grupo_de_alimentos, grupos[i]);
+
+                novo->nome_alimento = malloc(TAM_NOME);
+                strcpy(novo->nome_alimento, "[GRUPO]"); // Indica grupo
+
+                for (int k = 0; k < MACROS; k++) {
+                    novo->macros[k] = -1.0f; // Valor especial para grupo, nao alimento real
+                }
+
+                aux->total_alimentos_cadastrados++;
+                continue; // proximo j
+            }
+
+            novo->grupo_de_alimentos = malloc(strlen(grupos[i]) + 1);
+            strcpy(novo->grupo_de_alimentos, grupos[i]);
+
+            novo->nome_alimento = malloc(TAM_NOME);
+            ler_string(novo->nome_alimento, TAM_NOME, "Nome do alimento: ");
+
+            for (int k = 0; k < MACROS; k++) {
+                printf("%s", nome_macros[k]);
+                scanf("%f", &novo->macros[k]);
+                limpar_buffer();
+            }
+            aux->total_alimentos_cadastrados++;
+
+            char resposta = ler_sn("Adicionar outro alimento neste grupo? (s/n): ");
+            if (resposta == 'n') break;
+        }
+
+        continuar = ler_sn("Inserir alimentos em novos grupos? (s/n): ");
+        if (continuar == 'n') break;
+
+        int op_valida = 0;
+        while(!op_valida) {
+            char entrada[10];
+            char op;
+            ler_string(entrada, 10,
+            "\n[P] Proteinas\n[C] Carboidratos\n[L] Legumes\n[V] Vegetais\n[B] Bebidas\n[S] Sair\n\n");
+            op = tolower(entrada[0]);
+
+            switch(op) {
+            case 'p':
+                i=0;
+                op_valida = 1;
+                break;
+            case 'c':
+                i=1;
+                op_valida = 1;
+                break;
+            case 'l':
+                i=2;
+                op_valida = 1;
+                break;
+            case 'v':
+                i=3;
+                op_valida = 1;
+                break;
+            case 'b':
+                i=4;
+                op_valida = 1;
+                break;
+            case 's':
+                printf("Saindo...\n");
+                continuar = 'n';
+                op_valida = 1;
+                break;
+            default:
+                printf("Opcao invalida! Tente novamente.\n");
+                break;
+            }
+        }
+    }
+}
+
+/***************************grava_alimentos**********************************************
+* A Função grava o nome dos alimentos e seus marcos no arquivo "Tabela_Nutricional.txt". *
+* Parâmetros:                                                                            *
+*  - recebeAlimento a: aponta para struct onde os dados estão armazenados                *
+* Retorno:                                                                               *
+*  - void                                                                                *
+******************************************************************************************/
+
+void grava_alimentos(aux_recebeAlimento* aux) {
+    FILE *f = fopen("Tabela_Nutricional.txt", "w");
+    if (f == NULL) {
+        printf("Erro ao abrir o arquivo.\n");
+        return;
+    }
+
+    for (int i = 0; i < aux->total_alimentos_cadastrados; i++) {
+        if (strcmp(aux->recebeAlimento[i].nome_alimento, "[GRUPO]") == 0) {
+            fprintf(f, "%s\n", aux->recebeAlimento[i].grupo_de_alimentos);
+        } else {
+            fprintf(f, "%s, ", aux->recebeAlimento[i].nome_alimento);
+            for (int k = 0; k < MACROS; k++) {
+                fprintf(f, "%.2f", aux->recebeAlimento[i].macros[k]);
+                if (k < MACROS - 1) fprintf(f, " ");
+            }
+            fprintf(f, "\n");
+        }
+    }
+    fclose(f);
+}
+
+/***************************liberar_alimentos*********************************************
+* A Função libera a memoria alocada para a struct recebeAlimento.                        *
+* Parâmetros:                                                                            *
+*  -  *aux  aponta para struct aux_recebeAlimento                                        *
+* Retorno:                                                                               *
+*  - void                                                                                *
+******************************************************************************************/
+
+void liberar_alimentos(aux_recebeAlimento* aux) {
+    for (int i = 0; i < aux->total_alimentos_cadastrados; i++) {
+        free(aux->recebeAlimento[i].grupo_de_alimentos);
+        free(aux->recebeAlimento[i].nome_alimento);
+    }
+    free(aux->recebeAlimento);
+}
+
+/****************************************************************************************************/
+/***********************************GERA MENU DE ALIMENTOS ******************************************/
+/****************************************"menu.txt"**************************************************/
+/****************************************************************************************************/
+
+
+/*******************************menu_grava_alimentos******************************
+* A Função grava os nome de alimentos separados por grupos no arquivo "menu.txt" *
+* Parâmetros:                                                                    *
+*  - aux_recebeAlimento* aux: aponta para struct onde os dados estão armazenados                  *
+* Retorno:                                                                       *
+*  - void                                                                        *
+**********************************************************************************/
+void menu_grava_alimentos(aux_recebeAlimento* aux) { 
+    FILE *f = fopen("Tabela_Nutricional.txt", "w");
+    if (f == NULL) {
+        printf("Erro ao abrir o arquivo.\n");
+        return;
+    }
+
+    int i = 0;
+    while (i < aux->total_alimentos_cadastrados) {
+        if (strcmp(aux->recebeAlimento[i].nome_alimento, "[GRUPO]") == 0) {
+            fprintf(f, "%s", aux->recebeAlimento[i].grupo_de_alimentos);
+            i++;
+
+            while (i < aux->total_alimentos_cadastrados &&
+                   strcmp(aux->recebeAlimento[i].nome_alimento, "[GRUPO]") != 0) {
+                fprintf(f, ", %s", aux->recebeAlimento[i].nome_alimento);
+                i++;
+            }
+            fprintf(f, "\n");
+        } else {
+            i++; // pular itens fora do grupo (não esperado)
+        }
+    }
+
+    fclose(f);
+}
+
 
 
 

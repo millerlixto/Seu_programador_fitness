@@ -10,11 +10,8 @@
 #define TAM_NOME 50
 #define TAM_LINHA 256
 #define QUANT_ALIMENTO 55
-
-#define GRUPO 5
-#define NOME 50
+#define NUM_GRUPO 5
 #define QNT_ALIMENTO 11
-
 #define PESOS 26
 #define INTERVALO_PESO 5
 
@@ -63,7 +60,7 @@ int aproxima_peso(user* u) {
      ***********************************/
     
     int indice_mais_proximo = 0;
-    int menor_diferenca = abs(peso[0] - peso_convertido);  // diferença inicial
+    int menor_diferenca = abs(peso[0] - peso_convertido);  // diferença positiva
 
     for (int i = 1; i < PESOS; i++) {
         int diferenca = abs(peso[i] - peso_convertido);
@@ -288,6 +285,28 @@ void limpar_buffer() {
     while ((c = getchar()) != '\n' && c != EOF);
 }
 
+/************************ler_sn*************************
+* A função lê apenas 's' ou 'n', tratamento de entrada *
+* Parâmetros:                                          *
+*  char                                                *
+* Retorno:                                             *
+*  's' ou 'n'                                          *
+********************************************************/
+char ler_sn(const char* mensagem) {
+    char resposta;
+    while (1) {
+        printf("%s", mensagem);
+        if (scanf(" %c", &resposta)) {
+            limpar_buffer();
+            if (resposta == 's' || resposta == 'n') {
+                return resposta;
+            } else {
+                printf("Por favor, digite apenas 's' para sim ou 'n' para nao.\n");
+            }
+        }
+    }
+}
+
 /***********************************************/
 /******************CONVERSÕES*******************/
 /***********************************************/
@@ -420,13 +439,13 @@ void select_Menu(select_alimento* sa) {
     char* token;
 
     // Matriz com nomes dos alimentos lidos do arquivo
-    char alimentos[GRUPO][QNT_ALIMENTO][NOME] = {{{0}}};  
+    char alimentos[NUM_GRUPO][QNT_ALIMENTO][TAM_NOME] = {{{0}}};  
     int total_grupos = 0;  // Contador 
 
     /**************************************
      * Leitura e separação dos alimentos *
      **************************************/
-    while (fgets(linha, sizeof(linha), f) != NULL && total_grupos < GRUPO) {
+    while (fgets(linha, sizeof(linha), f) != NULL && total_grupos < NUM_GRUPO) {
         linha[strcspn(linha, "\n")] = '\0';  // Remove \n do final da linha
 
         int alimentoLido = 0;
@@ -434,8 +453,8 @@ void select_Menu(select_alimento* sa) {
 
         // Separa alimentos da linha atual
         while (token != NULL && alimentoLido < QNT_ALIMENTO) {
-            strncpy(alimentos[total_grupos][alimentoLido], token, NOME - 1);
-            alimentos[total_grupos][alimentoLido][NOME - 1] = '\0';  // Garante final da string
+            strncpy(alimentos[total_grupos][alimentoLido], token, TAM_NOME - 1);
+            alimentos[total_grupos][alimentoLido][TAM_NOME - 1] = '\0';  // Garante final da string
             alimentoLido++;
             token = strtok(NULL, ",");  // Próximo token
         }
@@ -449,11 +468,11 @@ void select_Menu(select_alimento* sa) {
      * Escolha dos alimentos pelo usuário *
      **************************************/
     for (int grupo = 0; grupo < total_grupos; grupo++) {
-       printf("\n************** Sugestao de de alimento para plano alimentar ***************\n");
-       printf("Escolha 1 alimento do grupo %s:\n", alimentos[grupo][0]);
+     printf("\n************** Sugestao de de alimento para plano alimentar ***************\n");
+     printf("Escolha 1 alimento do grupo %s:\n", alimentos[grupo][0]);
 
         // Lista alimentos disponíveis para esse grupo
-       for (int i = 1; i < QNT_ALIMENTO && alimentos[grupo][i][0] != '\0'; i++) {
+     for (int i = 1; i < QNT_ALIMENTO && alimentos[grupo][i][0] != '\0'; i++) {
         printf("%d - %s\n", i, alimentos[grupo][i]);
     }
 
@@ -505,8 +524,6 @@ for (int i = 0; i < total_grupos; i++) {
 }
 }
 
-void calc_Macros(user *u, ativ_fisica* at, select_alimento* sa){
-}
 
 
 

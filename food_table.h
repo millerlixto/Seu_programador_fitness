@@ -7,18 +7,25 @@
 #define TAM_NOME 50
 #define MACROS 4
 #define ALIMENTOS_POR_GRUPO 10
-#define NUM_GRUPOS          5
+#define NUM_GRUPOS 5
 
 /***********************************************/
 /*******************ESTRUTURAS******************/
 /***********************************************/
 
-//recebe lista de alimentos para gravar no menu
+//*************************recebe lista de alimentos para gravar no menu********************
 typedef struct {
-    char grupo_de_alimentos[NUM_GRUPOS][TAM_NOME];//grupo de alimentos proteinas, carboidratos, legumes, vegetais, bebidas
-    char nome_alimento[ALIMENTOS_POR_GRUPO][TAM_NOME];//nome dos alimentos(10 alimentos por grupo)
-    float macros[ALIMENTOS_POR_GRUPO][MACROS];//macro nutrientes dos alimetnos(calorias, proteinas, carboidratos, gordura)
+    char* grupo_de_alimentos;//grupo de alimentos proteinas, carboidratos, legumes, vegetais, bebidas
+    char* nome_alimento;//nome dos alimentos
+    float macros[MACROS];//macro nutrientes dos alimetnos(calorias, proteinas, carboidratos, gordura)
 } recebeAlimento;
+
+//auxilia a struct recebeAlimento
+typedef struct {
+    recebeAlimento* recebeAlimento;  // ponteiro para vetor de alimentos(struct recebeAlimento)
+    int total_alimentos_cadastrados; // total de alimentos cadastrados
+} aux_recebeAlimento;
+//******************************************************************************************
 
 // Guarda os macros nutrientes e calorias totais diárias
 // a ser consumida pelo usuário, baseado no peso e nivél de ativiade física do usuário
@@ -32,10 +39,6 @@ typedef struct {
     char alimento[NUM_GRUPOS][TAM_NOME];  // nomes dos alimentos encontrados
     float macros_para_100g[NUM_GRUPOS][MACROS]; // Kcal, Prot, Carb, Gord
 } infor_nutri_alimento;
-
-typedef struct {
-    char alimentos[NUM_GRUPOS][ALIMENTOS_POR_GRUPO][TAM_NOME];// recebe os alimentos que irão gerar o arquivo 
-} menu;
 
 typedef struct{
     infor_nutri_alimento infor_nutri_alimento;
@@ -53,6 +56,9 @@ int macros_por_peso(user *u, ativ_fisica *at, MacrosNutr *saida);
 // recebe os alimentos de select_alimentos e guarda os macros para cada 100g na struct INFOR_NUTRI
 int table_nutriction(infor_nutri_alimento* saida, select_alimento* sa);
 
+// imprime plano alimentar 
+void planoAlimentar(plano_alimentar* pa);
+
 
 /****************************************************************************************************/
 /***********************************GERA TABELA NUTRICIONAL******************************************/
@@ -60,9 +66,11 @@ int table_nutriction(infor_nutri_alimento* saida, select_alimento* sa);
 /****************************************************************************************************/
 
 //função recebe uma lista de alimentos
-void recebe_alimentos(recebeAlimento** a);
+void recebe_alimentos(aux_recebeAlimento* aux);
 //função que carrega a lista de alimentos no arquivo
-void grava_alimentos(recebeAlimento** a);
+void grava_alimentos(aux_recebeAlimento* aux);
+//função libera memoria alocada pra receber lista de alimentos
+void liberar_alimentos(aux_recebeAlimento* aux);
 
 
 
@@ -71,13 +79,9 @@ void grava_alimentos(recebeAlimento** a);
 /****************************************"menu.txt"**************************************************/
 /****************************************************************************************************/
 
-//função recebe uma lista de alimentos para o menu
-void menu_recebe_alimentos(menu* m);
 //função que carrega os alimentos no arquivo
-void menu_grava_alimentos(menu* m);
-//visualiza o arquivo 
+void menu_grava_alimentos(aux_recebeAlimento* aux);
 
-void planoAlimentar(plano_alimentar* pa);
 
 
 
